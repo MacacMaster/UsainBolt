@@ -4,6 +4,7 @@ from tkinter import *
 from tkinter.filedialog import *
 import sqlite3
 import time
+from _overlapped import NULL
 
 class Vue():
     def __init__(self, parent):
@@ -54,24 +55,45 @@ class Vue():
         self.frameCommande.pack(fill=X)
         self.canCommande=Canvas(self.frameCommande, height=100, bg="light gray")
         self.canCommande.pack(fill=X)
+        
         #Entree de l'expression
-        #self.lblExpression=Label(self.frameCommande, text="Expression:", padx=30, pady=10, bg="light gray")
-        #self.lblExpression.pack(side=LEFT)
         self.tfExpression=Entry(self.canCommande, width=100)
         self.tfExpression.insert(0, "Cliquer sur un mot")
         self.canCommande.create_window(400,30,window=self.tfExpression,width=600,height=20)
         
-        self.btnObjet=Button(self.frameCommande, text="Objet", width=30)
+        #Boutons de nature
+        self.btnObjet=Button(self.frameCommande, text="Objet", width=30, command=lambda:self.choixNature(1))
         self.canCommande.create_window(150,70,window=self.btnObjet,width=110,height=30)
-        self.btnAction=Button(self.frameCommande, text="Action", width=30)
+        self.btnAction=Button(self.frameCommande, text="Action", width=30, command=lambda:self.choixNature(2))
         self.canCommande.create_window(275,70,window=self.btnAction,width=110,height=30)
-        self.btnAttribut=Button(self.frameCommande, text="Attribut", width=30)
+        self.btnAttribut=Button(self.frameCommande, text="Attribut", width=30, command=lambda:self.choixNature(3))
         self.canCommande.create_window(400,70,window=self.btnAttribut,width=110,height=30)
-        self.btnImplicite=Button(self.frameCommande, text="Implicite", width=30)
+        
+        #Boutons de type
+        self.btnImplicite=Button(self.frameCommande, text="Implicite", width=30, bg="light blue", command=lambda:self.choixType(1))
         self.canCommande.create_window(525,70,window=self.btnImplicite,width=110,height=30)
-        self.btnSupplementaire=Button(self.frameCommande, text="Supplementaire", width=30)
+        self.btnSupplementaire=Button(self.frameCommande, text="Supplementaire", width=30, bg="light blue", command=lambda:self.choixType(2))
         self.canCommande.create_window(650,70,window=self.btnSupplementaire,width=110,height=30)
     
+    
+    def choixNature(self,choix):
+        if choix==1:
+           Expression.nature="Objet"
+           print("choix objet")
+        elif choix==2:
+            Expression.nature="Action"
+            print("choix action")
+        elif choix==3:
+            Expression.nature="Attribut"
+            print("choix attribut")
+        
+   
+    def choixType(self,choix):
+        if choix==1:
+            Expression.type="Implicite"
+        elif choix==2:
+            Expression.type="Supplementaire"
+        
    
     def ecranAnalyse(self):
         self.frameAnalyse=Frame(self.fenetre, width=self.largeurMandat, height=self.hauteurTotale/2, bg="steelblue", padx=10,pady=10)
@@ -165,6 +187,14 @@ class Vue():
         self.text.tag_config('jaune', background='yellow')
   
 
+class Expression():
+    def __init__(self):
+        self.type="Explicite"
+        self.nature=null
+        self.contenu=null
+        self.emplacement=null
+        self.modif=false #permet de verifier une modificatio manuelle a ete apportee dans le textbox
+        
 
   
 class Modele():
