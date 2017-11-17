@@ -118,24 +118,24 @@ class Vue():
     
     def choixNature(self,choix):
         if choix==1:
-           Expression.nature="Objet"
-           print("choix objet")
+            self.parent.modele.uneExpression.nature="Objet"
+            print(self.parent.modele.uneExpression.nature)
         elif choix==2:
-            Expression.nature="Action"
+            self.parent.modele.uneExpression.nature="Action"
             print("choix action")
         elif choix==3:
-            Expression.nature="Attribut"
+            self.parent.modele.uneExpression.nature="Attribut"
             print("choix attribut")
         
-        if Expression.modif==false:
-            pass
+        if self.parent.modele.uneExpression.modif==0:
+            print("Ajout a la liste!")
         
     def choixType(self,choix):
-        if Expression.nature!=null:
+        if self.parent.modele.uneExpression.nature!=NULL:
             if choix==1:
-                Expression.type="Implicite"
+                self.parent.modele.uneExpression.type="Implicite"
             elif choix==2:
-                Expression.type="Supplementaire"
+                self.parent.modele.uneExpression.type="Supplementaire"
                 
         else:
             print("Entrez une nature de mot ") #Remplcer par une fenetre avertissement ou autre 
@@ -236,10 +236,10 @@ class Vue():
 class Expression():
     def __init__(self):
         self.type="Explicite"
-        self.nature=null
-        self.contenu=null
-        self.emplacement=null
-        self.modif=false #permet de verifier une modificatio manuelle a ete apportee dans le textbox
+        self.nature=NULL
+        self.contenu=NULL
+        self.emplacement=NULL
+        self.modif=0 #permet de verifier une modificatio manuelle a ete apportee dans le textbox
         
 
   
@@ -247,7 +247,8 @@ class Modele():
     def __init__(self, parent):
         self.parent=parent
         self.creerTables() # a enlever (tests)
-
+        self.uneExpression=Expression()
+        
     """def ajouter(self,canva):
         self.mots = []
         lesTags = self.parent.vue.text.tag_ranges("jaune")
