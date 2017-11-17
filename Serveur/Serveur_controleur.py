@@ -40,7 +40,7 @@ class ControleurServeur():
         
     def logInServeur(self, pUsagerIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
         #Debug
-        #pid = Popen(["C:\\Python34\\Python.exe", "../SQL Serveur/ServeurBD_controleur.py"],shell=1).pid       
+              
          
         ad="http://"+pUsagerIP+":9998"
         print("Connection au serveur BD...")
@@ -111,7 +111,7 @@ class ControleurServeur():
         return xmlrpc.client.Binary(contenu)
             
     def writeLog(self,date,org,user,ip,db,module,action):
-        logLocation='../Serveur/Logs.sqlite'
+        logLocation='Logs.sqlite'
         logdb = sqlite3.connect(logLocation)
         curseur = logdb.cursor()
         curseur.execute("INSERT INTO logs VALUES(?,?,?,?,?,?,?)", (date,org,user,ip,db,module,action,))
