@@ -117,12 +117,18 @@ class Vue():
             Expression.nature="Attribut"
             print("choix attribut")
         
-   
+        if Expression.modif==false:
+            pass
+        
     def choixType(self,choix):
-        if choix==1:
-            Expression.type="Implicite"
-        elif choix==2:
-            Expression.type="Supplementaire"
+        if Expression.nature!=null:
+            if choix==1:
+                Expression.type="Implicite"
+            elif choix==2:
+                Expression.type="Supplementaire"
+                
+        else:
+            print("Entrez une nature de mot ") #Remplcer par une fenetre avertissement ou autre 
         
    
     def ecranAnalyse(self):
@@ -232,7 +238,7 @@ class Modele():
         self.parent=parent
         self.creerTables() # a enlever (tests)
 
-    def ajouter(self,canva):
+    """def ajouter(self,canva):
         self.mots = []
         lesTags = self.parent.vue.text.tag_ranges("jaune")
         temp = ""
@@ -242,7 +248,7 @@ class Modele():
         for i in range(0, len(ranges), 2):
             start = ranges[i]
             stop = ranges[i+1]
-            self.mots.append(( (repr(self.parent.vue.text.get(start, stop))) ))
+            self.mots.append(( (repr(self.parent.vue.text.get(start, stop))) ))"""
      
     #tests (a enlever plus tard)        
     def creerTables(sel):
