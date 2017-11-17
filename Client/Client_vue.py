@@ -64,7 +64,7 @@ class Vue():
         self.controleur.logInClient(identifiantNomUsager, identifiantNomOrga,identifiantMotDePasse)
     
     def logInClientFail(self):
-        messagebox.showwarning('Connexion refusée', 'Nom de compte ou mot de passe incorrecte')
+        messagebox.showwarning('Connexion refusée', 'Nom de compte ou mot de passe incorrect')
     
     def creerCadreCentral(self):
         self.cadreCentral=Frame(self.cadreApplication)

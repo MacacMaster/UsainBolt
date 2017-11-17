@@ -49,7 +49,7 @@ class Controleur():
             lieu=cwd+lieuApp
             print(lieu)
             if not os.path.exists(lieu):
-                os.mkdir(lieu) #plante s'il exist deja
+                os.mkdir(lieu) #plante s'il existe deja
             reso=rep[1]
             print(rep[1])
             for i in rep[2]:

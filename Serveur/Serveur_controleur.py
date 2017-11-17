@@ -40,7 +40,7 @@ class ControleurServeur():
         
     def logInServeur(self, pUsagerIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
         #Debug
-        pid = Popen(["C:\\Python34\\Python.exe", "../SQL Serveur/ServeurBD_controleur.py"],shell=1).pid       
+        #pid = Popen(["C:\\Python34\\Python.exe", "../SQL Serveur/ServeurBD_controleur.py"],shell=1).pid       
          
         ad="http://"+pUsagerIP+":9998"
         print("Connection au serveur BD...")
