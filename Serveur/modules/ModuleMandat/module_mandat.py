@@ -23,9 +23,10 @@ class Vue():
         self.explorateurFichiers(self.text) 
                
         #menu deroulante
+        menubar = Menu(self.root)
         self.filemenu = Menu(menubar, tearoff=0)
-        self.filemenu.add_command(label="Open", command=hello)
-        self.filemenu.add_command(label="Save", command=hello)
+        self.filemenu.add_command(label="Enregistrer", command=hello)
+        self.filemenu.add_command(label="Charger un fichier", command=hello)
 
         
     def ecranMandat(self):
@@ -68,9 +69,9 @@ class Vue():
         
         
     
-	def explorateurFichiers(self, text):
-    #ouvrir un fichier
-    # filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt'),('all files','.*')])
+    def explorateurFichiers(self,text):
+        #ouvrir un fichier
+        # filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt'),('all files','.*')])
         fonctionne = True
         filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt')])
         try:
