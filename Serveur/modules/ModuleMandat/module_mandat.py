@@ -139,12 +139,13 @@ class Vue():
                 print("Ajout a la liste implicite!")
                 self.uneExpression=Expression()
             elif choix==2:
-                
                 print("Ajout a la liste implicite!")
-                self.uneExpression=Expression()        else:
+                self.uneExpression=Expression()        
+        else:
             print("Entrez une nature de mot ") #Remplcer par une fenetre avertissement ou autre 
         #appel de la fonction SQL pour enregistrer dans la BD
-        self.parent.modele.insertionSQL(self.parent.modele.uneExpression) 
+        
+        #self.parent.modele.insertionSQL(self.parent.modele.uneExpression) 
    
     def ecranAnalyse(self):
         self.frameAnalyse=Frame(self.fenetre, width=self.largeurMandat, height=self.hauteurTotale/2, bg="steelblue", padx=10,pady=10)
@@ -253,6 +254,43 @@ class Modele():
         self.parent=parent
         self.creerTables() # a enlever (tests)
         self.uneExpression=Expression()
+        self.tupleBD=NULL
+        self.listeExpObj=[]
+        self.listeExpAct=[]
+        self.listeExpAtt=[]
+        self.listeImpObj=[]
+        self.listeImpAct=[]
+        self.listeImpAtt=[]
+        self.listeSupObj=[]
+        self.listeSupAct=[]
+        self.listeSupAtt=[]
+        
+        
+    def ajoutListe(self):
+        for i in range(0,len(tupleBD)): 
+            if tupleBD[i][1]=="Explicite":
+                if tupleBD[i][4]=="Objet":
+                    self.listeExpObj.append(tupleBD[i][3])
+                if tupleBD[i][4]=="Action":
+                    self.listeExpAct.append(tupleBD[i][3])
+                if tupleBD[i][4]=="Attribut":
+                    self.listeExpAtt.append(tupleBD[i][3])
+                
+            if tupleBD[i][1]=="Implicite":
+                if tupleBD[i][4]=="Objet":
+                    self.listeImpObj.append(tupleBD[i][3])
+                if tupleBD[i][4]=="Action":
+                    self.listeImpAct.append(tupleBD[i][3])
+                if tupleBD[i][4]=="Attribut":
+                    self.listeImpAtt.append(tupleBD[i][3])
+                
+            if tupleBD[i][1]=="Supplementaire":
+                if tupleBD[i][4]=="Objet":
+                    self.listeSupObj.append(tupleBD[i][3])
+                if tupleBD[i][4]=="Action":
+                    self.listeSupAct.append(tupleBD[i][3])
+                if tupleBD[i][4]=="Attribut":
+                    self.listeSupAtt.append(tupleBD[i][3])
         
     """def ajouter(self,canva):
         self.mots = []
