@@ -18,6 +18,7 @@ class Vue():
         
         self.ecranMandat()
         self.ecranCommande()
+        self.ecranAnalyse()
         
     def ecranMandat(self):
         self.frameMandat = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
@@ -51,13 +52,12 @@ class Vue():
         self.canCommande.create_window(650,70,window=self.btnSupplementaire,width=110,height=30)
     
     def ecranAnalyse(self):
-        pass
-     
+        self.frameAnalyse=Frame(self.fenetre, width=self.largeurMandat, height=self.hauteurTotale/2, bg="steelblue", padx=10,pady=10)
+        self.frameAnalyse.pack(fill=X)
+        self.canAnalyse=Canvas(self.frameAnalyse, height=100, bg="light gray")
+        self.canAnalyse.pack(fill=X)
         
-        #Affichage du mandat
-    
-    
-    
+        
     
     
         
@@ -73,7 +73,7 @@ class Vue():
         #self.text.tag_remove(str("jaune"),str(index),str(index+1))
          
         self.text.tag_add("jaune", "@%d,%d" % (event.x, event.y))   
-        self.propagateTag(event)
+        #self.propagateTag(event)
         self.specialEffect()
         self.ajouter(self.canva)
         self.updateListe()
