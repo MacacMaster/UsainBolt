@@ -1,0 +1,4 @@
+/*.project
+/*.pydevproject
+/.settings/*.prefs
+/Client/__pycache__/*.pyc
