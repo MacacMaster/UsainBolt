@@ -2,3 +2,4 @@
 /*.pydevproject
 /.settings/*.prefs
 /Client/__pycache__/*.pyc
+/Client/projet/__pycache__/*.pyc

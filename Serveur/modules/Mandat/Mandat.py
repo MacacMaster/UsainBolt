@@ -141,7 +141,7 @@ class Vue():
             elif choix==2:
                 
                 print("Ajout a la liste implicite!")
-                self.uneExpression=Expression()        else:
+                self.uneExpression=Expression()       # else:
             print("Entrez une nature de mot ") #Remplcer par une fenetre avertissement ou autre 
         #appel de la fonction SQL pour enregistrer dans la BD
         self.parent.modele.insertionSQL(self.parent.modele.uneExpression) 

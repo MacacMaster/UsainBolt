@@ -17,9 +17,9 @@ class Log():
     dbip=None
     
 #    def __init__(self,organisation="Organisation",user="User",action="Action",ip = "8.8.8.8",db="1.1.1.1"):
-    def __init__(self,ip):
+    def __init__(self,parent,ip):
         self.clientip=ip
-        
+        self.parent=parent
         #=======================================================================
         # logLocation='Logs.sqlite'
         # logdb = sqlite3.connect(logLocation)
@@ -37,22 +37,17 @@ class Log():
         # self.log.write(time.strftime("%c")+" - "+organisation+" - "+user+" - "+ip+" - "+db+" - "+module+" - "+action)
         # self.log.close()
         #=======================================================================
-    pass
-
+    
+    #Assigner les valeurs qui ne changeront pas directement dans la classe
     def setLog(self,organisation="Organisation",user="User",db="1.1.1.1"):
-        #Assigner les valeurs qui ne changeront pas directement dans la classe
         self.organisation=organisation
         self.user=user
         self.dbip=db
-        pass
-
-    def setLogParent(self,parent):
-        self.parent=parent
-           
+    
+    #La fonction d'écriture du log
     def writeLog(self,action="Actionman",module="Client"):
-        print(self.getTime() + " "+self.organisation + " "+self.user + " "+self.clientip + " "+self.dbip + " "+module + " "+action)
+        #print(self.getTime() + " "+self.organisation + " "+self.user + " "+self.clientip + " "+self.dbip + " "+module + " "+action)
         self.parent.serveur.writeLog(self.getTime(),self.organisation,self.user,self.clientip,self.dbip,module,action)
-        pass
     
     #===========================================================================
     # def logWrite2(self,module="a.py",action="Action"):
@@ -62,13 +57,7 @@ class Log():
     #     self.log.close()
     #===========================================================================
         
-    #===========================================================================
-    # def logRead(self):
-    #     with open(self.logLocation) as f:
-    #         for line in f:
-    #             print (line,end="")         
-    #     f.closed
-    #===========================================================================
-    
+
+    #Retourne le temps du système
     def getTime(self):
         return (datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
