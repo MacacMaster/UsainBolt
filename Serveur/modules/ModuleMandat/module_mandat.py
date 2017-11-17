@@ -74,6 +74,7 @@ class Vue():
         self.btnSupplementaire=Button(self.frameCommande, text="Supplementaire", width=30)
         self.canCommande.create_window(650,70,window=self.btnSupplementaire,width=110,height=30)
     
+   
     def ecranAnalyse(self):
         self.frameAnalyse=Frame(self.fenetre, width=self.largeurMandat, height=self.hauteurTotale/2, bg="steelblue", padx=10,pady=10)
         self.frameAnalyse.pack(fill=X)
@@ -93,15 +94,35 @@ class Vue():
         self.canAnalyse.create_window(675,40,window=self.labelAttribut, width=220, height=40)
         
         #2e ligne grille
-        self.labelExplicite=Label(self.frameAnalyse, text="Explicite", width=100, height=50, bg="white", relief=RAISED )
-        self.canAnalyse.create_window(75,40,window=self.labelExplicite, width=100, height=40)
+        self.labelExplicite=Label(self.frameAnalyse, text="Explicite", width=100, height=80, bg="white", relief=RAISED )
+        self.canAnalyse.create_window(75,120,window=self.labelExplicite, width=100, height=120)
+        self.listExpObj=Listbox(self.frameAnalyse,width=220,height=120)
+        self.canAnalyse.create_window(235,120,window=self.listExpObj, width=220, height=120)
+        self.listExpAct=Listbox(self.frameAnalyse,width=220,height=120)
+        self.canAnalyse.create_window(455,120,window=self.listExpAct, width=220, height=120)
+        self.listExpAtt=Listbox(self.frameAnalyse,width=220,height=120)
+        self.canAnalyse.create_window(675,120,window=self.listExpAtt, width=220, height=120)
         
         #3e ligne grille
+        self.labelImplicite=Label(self.frameAnalyse, text="Implicite", width=100, height=80, bg="white", relief=RAISED )
+        self.canAnalyse.create_window(75,240,window=self.labelImplicite, width=100, height=120)
+        self.listImpObj=Listbox(self.frameAnalyse,width=220,height=120)
+        self.canAnalyse.create_window(235,240,window=self.listImpObj, width=220, height=120)
+        self.listImpAct=Listbox(self.frameAnalyse,width=220,height=120)
+        self.canAnalyse.create_window(455,240,window=self.listImpAct, width=220, height=120)
+        self.listImpAtt=Listbox(self.frameAnalyse,width=220,height=120)
+        self.canAnalyse.create_window(675,240,window=self.listImpAtt, width=220, height=120)
         
         
-        
-        
-        
+        #4e ligne grille
+        self.labelSupplementaire=Label(self.frameAnalyse, text="Supplementaire", width=100, height=80, bg="white", relief=RAISED )
+        self.canAnalyse.create_window(75,360,window=self.labelSupplementaire, width=100, height=120)
+        self.listSupObj=Listbox(self.frameAnalyse,width=220,height=120)
+        self.canAnalyse.create_window(235,360,window=self.listSupObj, width=220, height=120)
+        self.listSupAct=Listbox(self.frameAnalyse,width=220,height=120)
+        self.canAnalyse.create_window(455,360,window=self.listSupAct, width=220, height=120)
+        self.listSupAtt=Listbox(self.frameAnalyse,width=220,height=120)
+        self.canAnalyse.create_window(675,360,window=self.listSupAtt, width=220, height=120)
         
         
         
