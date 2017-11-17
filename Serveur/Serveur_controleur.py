@@ -20,8 +20,9 @@ class Client(object):
 class ModeleService(object):
     def __init__(self,pControleur):
         self.controleur=pControleur
-        self.modulesdisponibles={"projet":"projet"}
-        self.outilsdisponibles={"meta_sql": "meta_sql"}
+        #{Clé outils disponible:}
+        self.modulesdisponibles={"projet":"projet","Mandat":"Mandat"}
+        self.outilsdisponibles={"meta_sql": "meta_sql",}
         self.clients={}
 
     def creerclient(self,nom):
@@ -39,15 +40,13 @@ class ControleurServeur():
         self.serveurBD=None
         
     def logInServeur(self, pUsagerIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
-        #Debug
-        #pid = Popen(["C:\\Python34\\Python.exe", "../SQL Serveur/ServeurBD_controleur.py"],shell=1).pid       
-         
+        #Connection au serveurDB
         ad="http://"+pUsagerIP+":9998"
         print("Connection au serveur BD...")
-
         self.serveurBD=ServerProxy(ad)
         print("Connection serveur BD réussi")
         
+        #variables id
         identifiantNomUsager = pIdentifiantNomUsager
         identifiantNomOrga = pIdentifiantNomOrga
         identifiantMotDePasse = pIdentifiantMotDePasse
@@ -109,8 +108,17 @@ class ControleurServeur():
         contenu=fiche.read()
         fiche.close()
         return xmlrpc.client.Binary(contenu)
-            
-                
+    
+    #Fonction d'écriture du log        
+    def writeLog(self,date,org,user,ip,db,module,action):
+        logLocation='Logs.sqlite'
+        logdb = sqlite3.connect(logLocation)
+        curseur = logdb.cursor()
+        curseur.execute("INSERT INTO logs VALUES(?,?,?,?,?,?,?)", (date,org,user,ip,db,module,action,))
+        logdb.commit()
+        logdb.close()
+        return True 
+    
 print("Création du serveur...")
 daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9999))
 objetControleurServeur=ControleurServeur()

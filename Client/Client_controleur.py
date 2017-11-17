@@ -2,6 +2,7 @@
 
 from Client_modele  import *
 from Client_vue import *
+from Client_log import *
 import socket
 from xmlrpc.client import ServerProxy
 from subprocess import Popen
@@ -9,15 +10,21 @@ import os
 
 class Controleur():
     def __init__(self):
-        
         #Debug: Ouvre automatiquement le Serveur Controleur  
-        #pid1 = Popen(["C:\\Python34\\Python.exe", "../Serveur/Serveur_controleur.py"],shell=1).pid
-        #Debug : Serveur BD refuses connection
+        pid1 = Popen(["C:\\Python34\\Python.exe", "../Serveur/Serveur_controleur.py"],cwd='../Serveur',shell=1).pid
+        pid2 = Popen(["C:\\Python34\\Python.exe", "../SQL Serveur/ServeurBD_controleur.py"],cwd='../SQL Serveur',shell=1).pid 
+
+        
         self.clientIP = self.chercherIP()
         self.serveur=None
-        #self.log = Log(self,self.clientIP)
+        self.log=Log(self,self.clientIP)#,self.serveur)
+        #string utilisateur et organisation
+        self.utilisateur=None
+        self.organisation=None
+        
         self.vue=Vue(self,self.clientIP)
         self.vue.root.mainloop()
+        
     
     #trouve l'IP du client
     def chercherIP(self):
@@ -27,18 +34,27 @@ class Controleur():
 
     def fermerApplication(self):
         self.vue.root.destroy()
+    
         
     def logInClient(self, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
-        #connection au Serveur
-        ad="http://"+self.clientIP+":9999"
-        print("Connection au serveur Saas en cours...")
-        self.serveur=ServerProxy(ad)
-        print("Connection au serveur Saas réussi")
-        reponseServeur = self.serveur.logInServeur(self.clientIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse)
-        if (reponseServeur == 0):
-            self.vue.logInClientFail()
+        #Vérification des informations avant l'envoi au serveur
+        if (pIdentifiantNomOrga !="" and pIdentifiantNomUsager !="" and pIdentifiantMotDePasse !="" ):
+            #connection au Serveur
+            ad="http://"+self.clientIP+":9999"
+            print("Connection au serveur Saas en cours...")
+            self.serveur=ServerProxy(ad)
+            print("Connection au serveur Saas réussi")
+            #
+            reponseServeur = self.serveur.logInServeur(self.clientIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse)
+            self.log.setLog(pIdentifiantNomOrga,pIdentifiantNomUsager, "LoginDB")
+            if (reponseServeur == 0):
+                self.log.writeLog("Login Fail")
+                self.vue.logInClientFail()
+            else:
+                self.log.writeLog("Login Successful")
+                self.vue.chargerCentral(reponseServeur[2],reponseServeur[3])
         else:
-            self.vue.chargerCentral(reponseServeur[2],reponseServeur[3])
+            self.vue.logInClientFail()
             
     def requeteModule(self,mod):
         rep=self.serveur.requeteModule(mod)
