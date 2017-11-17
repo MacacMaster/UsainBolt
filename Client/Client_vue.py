@@ -1,139 +1,109 @@
-# -*- coding: utf-8 -*-
 from tkinter import *
 from tkinter import tix
 from tkinter import ttk
-from PIL import Image,ImageDraw, ImageTk
-import os,os.path
-import math
-from numpy.core.defchararray import center
-
+from tkinter import messagebox
 
 class Vue():
-    def __init__(self,parent,monip,largeur=800,hauteur=600):
+    def __init__(self,pControleur,pClientIp):
+        self.controleur = pControleur
+        self.largeur = 800
+        self.hauteur = 600
+        self.cadreActuel = None
         self.root=tix.Tk()
-        self.root.title(os.path.basename(sys.argv[0]))
-        self.root.protocol("WM_DELETE_WINDOW", self.fermerfenetre)
-        self.monip=monip
-        self.parent=parent
-        self.modele=None
-        self.nom=None
-        self.largeur=largeur
-        self.hauteur=hauteur
-        self.images={}
-        self.modes={}
-        self.modecourant=None
-        self.cadreactif=None
-        self.creercadres()
-        self.changecadre(self.cadrelogin)
+        self.root.title("SPRINTMASTER")
+        self.root.protocol("WM_DELETE_WINDOW", self.controleur.fermerApplication)
+        self.cadreApplication = Frame(self.root, width = self.largeur, height = self.hauteur)
+        self.cadreApplication.pack()
+        self.centrerFenetre()
         
-    def changemode(self,cadre):
-        if self.modecourant:
-            self.modecourant.pack_forget()
-        self.modecourant=cadre
-        self.modecourant.pack(expand=1,fill=BOTH)            
-
-    def changecadre(self,cadre,etend=0):
-        if self.cadreactif:
-            self.cadreactif.pack_forget()
-        self.cadreactif=cadre
-        if etend:
-            self.cadreactif.pack(expand=1,fill=BOTH)
-        else:
-            self.cadreactif.pack()
+        self.creerCadreLogIn(pClientIp)
+        self.creerCadreCentral()
+        self.changeCadre(self.cadreLogIn)
     
-    def chargercentral(self,repmodules, repoutils):
-        for i in repmodules:
-            self.listemodules.insert(END,i)
-        for i in repoutils:
-            self.listeoutils.insert(END,i)
-        self.changecadre(self.cadrecentral)
-        
-    def creercadres(self):
-        self.creercadrelogin()
-        self.creercadrecentral()
-        #self.cadrejeu=Frame(self.root,bg="blue")
-        #self.modecourant=None
-                
-    def creercadrelogin(self):
-        self.cadrelogin=Frame(self.root)
-        self.canevalogin=Canvas(self.cadrelogin,width=640,height=480,bg="grey")
-        self.canevalogin.pack()
-        self.lbltitre=Label(self.cadrelogin, text="Connexion")
-        self.orglogin=Entry(bg="white")
-        self.orglogin.insert(0, "CVM")
-        self.lblorgnom=Label(self.cadrelogin, text="Nom de l'organisation")
-        self.nomlogin=Entry(bg="white")
-        self.nomlogin.insert(12, "jmd")
-        self.lblnom=Label(self.cadrelogin, text="Nom de l'usager")
-        btnconnecter=Button(text="Connecter au serveur",bg="pink",command=self.loginclient)
-        self.canevalogin.create_window(300,160, window=self.lblorgnom, width=175, height=30)
-        self.canevalogin.create_window(300,200,window=self.orglogin,width=175,height=30)
-        self.canevalogin.create_window(300,260, window=self.lblnom, width=175, height=30)
-        self.canevalogin.create_window(300,300,window=self.nomlogin,width=175,height=30)
-        self.canevalogin.create_window(300,400,window=btnconnecter,width=175,height=30)
-        
+    def centrerFenetre(self):
+        self.root.update() # Suivant le WM. A faire dans tous les cas donc.
+        fenrw = self.root.winfo_reqwidth()
+        fenrh = self.root.winfo_reqheight()
+        sw = self.root.winfo_screenwidth()
+        sh = self.root.winfo_screenheight()
+        self.root.geometry("%dx%d+%d+%d" % (fenrw, fenrh, (sw-fenrw)/2, (sh-fenrh)/2))
     
-    def creercadrecentral(self):
-        self.cadrecentral=Frame(self.root)
-        self.cadremodule=Frame(self.cadrecentral)
-        self.canevamodule=Canvas(self.cadremodule,width=640,height=480,bg="green")
-        self.canevamodule.pack()
-        
-        self.listemodules=Listbox(self.cadremodule,bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
-        self.ipcentral=Entry(bg="pink")
-        self.ipcentral.insert(0, self.monip)
-        btnconnecter=Button(text="Choisir un module",bg="pink",command=self.requetemodule)
-        self.canevamodule.create_window(200,100,window=self.listemodules)
-        self.canevamodule.create_window(200,450,window=btnconnecter,width=100,height=30)
-        self.cadremodule.pack(side=LEFT)
-        # Autre cadre
-        
-        self.cadreoutils=Frame(self.cadrecentral)
-        self.canevaoutils=Canvas(self.cadreoutils,width=640,height=480,bg="green")
-        self.canevaoutils.pack()
-        
-        self.listeoutils=Listbox(self.cadreoutils,bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
-        btnconnecter=Button(text="Choisir un outils",bg="pink",command=self.requeteoutil)
-        self.canevaoutils.create_window(200,100,window=self.listeoutils)
-        self.canevaoutils.create_window(200,450,window=btnconnecter,width=100,height=30)
-        self.cadreoutils.pack(side=LEFT)
-        
-        
-    def requetemodule(self):
-        mod=self.listemodules.selection_get()
-        if mod:
-            self.parent.requetemodule(mod)
+    def changeCadre(self,cadre):
+        if self.cadreActuel:
+            self.cadreActuel.pack_forget()
+        self.cadreActuel=cadre
+        self.cadreActuel.pack()
             
-    def requeteoutil(self):
-        mod=self.listeoutils.selection_get()
+    def creerCadreLogIn(self,ip):
+        largeur = self.root.winfo_reqwidth()
+        hauteur = self.root.winfo_reqheight()
+        self.cadreLogIn=Frame(self.cadreApplication)
+        self.canevaLogIn=Canvas(self.cadreLogIn,width=largeur,height=hauteur) 
+        labNomOrga=Label(text="Nom organisation",bg="grey",borderwidth=0,relief=RIDGE,fg="black", font=("Helvetica", 12))
+        labNomUsager=Label(text="Nom usager",bg="grey",borderwidth=0,relief=RIDGE,fg="black", font=("Helvetica", 12))
+        labMDP=Label(text="Mot de passe",bg="grey",borderwidth=0,relief=RIDGE,fg="black", font=("Helvetica", 12))
+        self.entrerNomOrga=Entry(bg="white")
+        self.entrerNomUsager=Entry(bg="white")
+        self.entrerMotDePasse=Entry(bg="white", show="*")
+        btnLogInClient=Button(text="Se connecter", command=self.logInClient)
+        
+        self.canevaLogIn.create_window(largeur/2,250,window=labNomOrga,width=150,height=30)
+        self.canevaLogIn.create_window(largeur/2,300,window=self.entrerNomOrga,width=150,height=30)
+        self.canevaLogIn.create_window(largeur/2,350,window=labNomUsager,width=150,height=30)
+        self.canevaLogIn.create_window(largeur/2,400,window=self.entrerNomUsager,width=150,height=30)
+        self.canevaLogIn.create_window(largeur/2,450,window=labMDP,width=150,height=30)
+        self.canevaLogIn.create_window(largeur/2,500,window=self.entrerMotDePasse,width=150,height=30)
+        self.canevaLogIn.create_window(largeur/2,550,window=btnLogInClient,width=150,height=30) 
+        self.canevaLogIn.pack()
+        
+    def logInClient(self):
+        identifiantNomOrga = self.entrerNomOrga.get()
+        identifiantNomUsager = self.entrerNomUsager.get()
+        identifiantMotDePasse = self.entrerMotDePasse.get()
+        print("Nom de l'organisation entré par l'usager:", identifiantNomOrga,"Nom entré par l'usager ", identifiantNomUsager, "Mot de passe entré par l'usager ", identifiantMotDePasse)
+        self.controleur.logInClient(identifiantNomUsager, identifiantNomOrga,identifiantMotDePasse)
+    
+    def logInClientFail(self):
+        messagebox.showwarning('Connexion refusée', 'Nom de compte ou mot de passe incorrecte')
+    
+    def creerCadreCentral(self):
+        self.cadreCentral=Frame(self.cadreApplication)
+        
+        self.cadreModule = Frame(self.cadreCentral)
+        self.canevaModule=Canvas(self.cadreModule,width=400,height=600,bg="green")
+        self.canevaModule.pack()
+        self.listeModules=Listbox(self.cadreModule, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
+        btnconnecter=Button(self.cadreModule, text="Choisir un module",bg="pink",command=self.requeteModule)
+        self.canevaModule.create_window(200,100,window=self.listeModules)
+        self.canevaModule.create_window(200,450,window=btnconnecter,width=100,height=30)
+        self.cadreModule.pack(side=LEFT)
+        
+        #----------------------------
+        self.cadreOutil = Frame(self.cadreCentral)
+        self.canevaOutil=Canvas(self.cadreOutil,width=400,height=600,bg="lightgreen")
+        self.canevaOutil.pack()
+        
+        self.listeOutils=Listbox(self.cadreOutil, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
+        btnconnecter=Button(self.cadreOutil, text="Choisir un outil",bg="pink",command=self.requeteOutil)
+        self.canevaOutil.create_window(200,100,window=self.listeOutils)
+        self.canevaOutil.create_window(200,450,window=btnconnecter,width=100,height=30)
+        
+        self.cadreOutil.pack(side=LEFT)
+        
+    def requeteModule(self):
+        mod=self.listeModules.selection_get()
         if mod:
-            self.parent.requeteoutils(mod)
-        
-    def loginclient(self):
-        ipserveur=self.monip##self.ipsplash.get() # lire le IP dans le champ du layout
-        nom=self.nomlogin.get() # noter notre nom
-        self.parent.loginclient(ipserveur,nom)
-        
-    def center(toplevel):
-        toplevel.update_idletasks()
-        w = toplevel.winfo_screenwidth()
-        h = toplevel.winfo_screenheight()
-        size = tuple(int(_) for _ in toplevel.geometry().split('+')[0].split('x'))
-        x = w/2 - size[0]/2
-        y = h/2 - size[1]/2
-        toplevel.geometry("%dx%d+%d+%d" % (size + (x, y)))
-                
-    def fermerfenetre(self):
-        # Ici, on pourrait mettre des actions a faire avant de fermer (sauvegarder, avertir, etc)
-        self.parent.fermefenetre()
-##Conserver pour le chargement d'images
-    #def chargeimages(self):
-      #  im = Image.open("./images/chasseur.png")
-        #self.images["chasseur"] = ImageTk.PhotoImage(im)
+            self.controleur.requeteModule(mod)
 
-    
-if __name__ == '__main__':
-    m=Vue(0,"jmd","127.0.0.1")
-
-    m.root.mainloop()
-    
+    def requeteOutil(self):
+        mod=self.listeOutils.selection_get()
+        if mod:
+            self.controleur.requeteOutil(mod)
+            
+    def chargerCentral(self,repmodules, repoutils):
+        for i in repmodules:
+            self.listeModules.insert(END,i)
+        for i in repoutils:
+            self.listeOutils.insert(END,i)
+        self.changeCadre(self.cadreCentral)
+            
