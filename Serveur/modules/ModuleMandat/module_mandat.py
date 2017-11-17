@@ -15,26 +15,26 @@ class Vue():
         self.fenetre = Frame(master=self.root, width=self.largeurTotale, height=self.hauteurTotale, bg="steelblue")
         self.fenetre.pack()
         self.text = ""
-                
-        
+                      
         self.ecranMandat()
         self.ecranCommande()
-        
         self.ecranAnalyse()
-        #self.explorateurFichiers(self.text) 
                
+        self.barreTaches()
+
+    def barreTaches(self):
         #menu deroulante
         self.menubar = Menu(self.root)
         self.menubar.add_command(label="Enregistrer", command= lambda: self.parent.modele.enregistrer(self.text))
         self.menubar.add_command(label="Charger un fichier", command= lambda: self.parent.modele.explorateurFichiers(self.text))
         self.root.config(menu=self.menubar)
-
         
     def ecranMandat(self):
         self.frameMandat = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
         self.frameMandat.pack()
         self.text = Text(self.frameMandat, width=100, height=20)
-        self.text.insert("%d.%d" %(0,1),"Texte par defaut du mandat")
+        texteInitial = self.texteInitial()
+        self.text.insert("%d.%d" %(0,1),texteInitial)
         self.text.bind("<Button-1>",self.tagging)
         self.text.pack()
         
@@ -67,7 +67,15 @@ class Vue():
         self.canAnalyse=Canvas(self.frameAnalyse, height=100, bg="light gray")
         self.canAnalyse.pack(fill=X)
         
+    def texteInitial(self):
+        conn = sqlite3.connect('donnees.db')
+        c = conn.cursor()
         
+        c.execute('SELECT * FROM mandats')
+        texteMandat = c.fetchone()[0]
+               
+        conn.close()
+        return texteMandat
         
     
 
@@ -104,6 +112,7 @@ class Vue():
 class Modele():
     def __init__(self, parent):
         self.parent=parent
+        self.creerTables() # a enlever (tests)
 
     def ajouter(self,canva):
         self.mots = []
@@ -128,6 +137,21 @@ class Modele():
             start = ranges[i]
             stop = ranges[i+1]
             self.mots.append(( (repr(self.parent.vue.text.get(start, stop))) ))
+     
+    #tests (a enlever plus tard)        
+    def creerTables(sel):
+        conn = sqlite3.connect('donnees.db')
+        c = conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS  mots
+                     (mot text)''')
+        c.execute('''CREATE TABLE IF NOT EXISTS  mandats
+                     (mandat text)''')
+        mandat = "<----Regardez les accolades qui sont apparues!---->"
+        c.execute('INSERT INTO mandats VALUES(?)', (mandat,) )
+        c.execute("select name from sqlite_master where type = 'table'")
+        #print(c.fetchall())
+        conn.commit()
+        conn.close()     
     
     def enregistrer(self,texteMandat):
         #texteMandat = texteMandat.get(1.0,'end-1c')
@@ -140,6 +164,8 @@ class Modele():
         c.execute('INSERT INTO mandats VALUES(?)', (texteMandat,))
         conn.commit()
         conn.close()
+        
+        
             
     def explorateurFichiers(self,text):
         #ouvrir un fichier
