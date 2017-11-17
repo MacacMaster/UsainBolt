@@ -19,11 +19,13 @@ class Vue():
         self.ecranMandat()
         self.ecranCommande()
         self.ecranAnalyse()
+ 
                
         self.barreTaches()
 
     def barreTaches(self):
         #menu deroulante
+
         self.menubar = Menu(self.root)
         self.menubar.add_command(label="Enregistrer", command= lambda: self.parent.modele.enregistrer(self.text))
         self.menubar.add_command(label="Charger un fichier", command= lambda: self.parent.modele.explorateurFichiers(self.text))
@@ -71,6 +73,7 @@ class Vue():
     def ecranAnalyse(self):
         self.frameAnalyse=Frame(self.fenetre, width=self.largeurMandat, height=self.hauteurTotale/2, bg="steelblue", padx=10,pady=10)
         self.frameAnalyse.pack(fill=X)
+        self.canAnalyse=Canvas(self.frameAnalyse, height=500, bg="light gray")
         self.canAnalyse=Canvas(self.frameAnalyse, height=450, bg="light gray")
         self.canAnalyse.pack(fill=X)
         
