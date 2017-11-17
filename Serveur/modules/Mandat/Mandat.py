@@ -18,6 +18,7 @@ class Vue():
         self.fenetre = Frame(master=self.root, width=self.largeurTotale, height=self.hauteurTotale, bg="steelblue")
         self.fenetre.pack()
         self.text = ""
+        self.mot=""
                       
         self.ecranMandat()
         self.ecranCommande()
@@ -84,7 +85,7 @@ class Vue():
         self.frameMandat = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
         self.frameMandat.pack()
         self.text = Text(self.frameMandat, width=100, height=20)
-        #le texte initial est le texte préloadé de la derniere enregistrement
+        #le texte initial est le texte prï¿½loadï¿½ de la derniere enregistrement
         #texteInitial = self.texteInitial()
         texteInitial = ""
         self.text.insert("%d.%d" %(0,1),texteInitial)
@@ -122,32 +123,52 @@ class Vue():
     def choixNature(self,choix):
         if choix==1:
             self.parent.modele.uneExpression.nature="Objet"
-            print(self.parent.modele.uneExpression.nature)
         elif choix==2:
             self.parent.modele.uneExpression.nature="Action"
-            print("choix action")
         elif choix==3:
             self.parent.modele.uneExpression.nature="Attribut"
-            print("choix attribut")
         
-        if self.parent.modele.uneExpression.modif==0:
-            print("Ajout a la liste!")
-        
+        if self.mot==self.tfExpression.get():
+            parent.modele.updateExpression()
+            self.afficheListBox()
+            
+            
+    
     def choixType(self,choix):
         if self.parent.modele.uneExpression.nature!=NULL:
             if choix==1:
                 self.parent.modele.uneExpression.type="Implicite"
-                print("Ajout a la liste implicite!")
-                self.uneExpression=Expression()
             elif choix==2:
-                print("Ajout a la liste implicite!")
-                self.uneExpression=Expression()        
+               self.parent.modele.uneExpression.type="Supplementaire"
+            
+            self.parent.modele.updateExpression()
+            self.afficheListBox()    
         else:
             print("Entrez une nature de mot ") #Remplcer par une fenetre avertissement ou autre 
         #appel de la fonction SQL pour enregistrer dans la BD
         
         #self.parent.modele.insertionSQL(self.parent.modele.uneExpression)         
         #self.parent.modele.insertionSQL(self.parent.modele.uneExpression) 
+        
+    def afficheListBox(self):
+        for item in self.parent.modele.listeExpObj:
+            self.listExpObj.append(item)
+        for item in self.parent.modele.listeExpAct:
+            self.listExpAct.append(item)
+        for item in self.parent.modele.listeExpAtt:
+            self.listExpAtt.append(item)
+        for item in self.parent.modele.listeImpObj:
+            self.listImpObj.append(item)
+        for item in self.parent.modele.listeImpAct:
+            self.listImpAct.append(item)
+        for item in self.parent.modele.listeImpAtt:
+            self.listImpAtt.append(item)
+        for item in self.parent.modele.listeSupObj:
+            self.listSupObj.append(item)
+        for item in self.parent.modele.listeSupAct:
+            self.listSupAct.append(item)
+        for item in self.parent.modele.listeSupAtt:
+            self.listSupAtt.append(item)
    
     def ecranAnalyse(self):
         self.frameAnalyse=Frame(self.fenetre, width=self.largeurMandat, height=self.hauteurTotale/2, bg="steelblue", padx=10,pady=10)
@@ -256,6 +277,44 @@ class Modele():
         self.parent=parent
         self.creerTables() # a enlever (tests)
         self.uneExpression=Expression()
+        self.tupleBD=self.lectureSQL()
+        self.listeExpObj=[]
+        self.listeExpAct=[]
+        self.listeExpAtt=[]
+        self.listeImpObj=[]
+        self.listeImpAct=[]
+        self.listeImpAtt=[]
+        self.listeSupObj=[]
+        self.listeSupAct=[]
+        self.listeSupAtt=[]
+        
+    
+    def ajoutListe(self):
+        tupleBD = self.tupleBD
+        for i in range(0,len(tupleBD)): 
+            if tupleBD[i][1]=="Explicite":
+                if tupleBD[i][4]=="Objet":
+                    self.listeExpObj.append(tupleBD[i][3])
+                if tupleBD[i][4]=="Action":
+                    self.listeExpAct.append(tupleBD[i][3])
+                if tupleBD[i][4]=="Attribut":
+                    self.listeExpAtt.append(tupleBD[i][3])
+                
+            if tupleBD[i][1]=="Implicite":
+                if tupleBD[i][4]=="Objet":
+                    self.listeImpObj.append(tupleBD[i][3])
+                if tupleBD[i][4]=="Action":
+                    self.listeImpAct.append(tupleBD[i][3])
+                if tupleBD[i][4]=="Attribut":
+                    self.listeImpAtt.append(tupleBD[i][3])
+                
+            if tupleBD[i][1]=="Supplementaire":
+                if tupleBD[i][4]=="Objet":
+                    self.listeSupObj.append(tupleBD[i][3])
+                if tupleBD[i][4]=="Action":
+                    self.listeSupAct.append(tupleBD[i][3])
+                if tupleBD[i][4]=="Attribut":
+                    self.listeSupAtt.append(tupleBD[i][3])
         
     """def ajouter(self,canva):
         self.mots = []
@@ -268,6 +327,13 @@ class Modele():
             start = ranges[i]
             stop = ranges[i+1]
             self.mots.append(( (repr(self.parent.vue.text.get(start, stop))) ))"""
+    
+    def updateExpression(self):
+        self.insertionSQL(self.uneExpression)
+        self.tupleBD=self.lectureSQL()
+        self.ajoutListe()
+        self.uneExpression=Expression()
+    
      
     #tests (a enlever plus tard)        
     def creerTables(sel):
@@ -295,8 +361,7 @@ class Modele():
         c.execute('INSERT INTO mandats VALUES(?)', (texteMandat,))
         conn.commit()
         conn.close()
-        
-    def updateLesListes(self):    
+ 
             
     def explorateurFichiers(self,text):
         #ouvrir un fichier
@@ -321,9 +386,9 @@ class Modele():
         table = "Mots"
         sql = "insert into " + table +  " (Types, Emplacement, Contenu, Nature) VALUES (" + str(expression.type) +"," + str(expression.emplacement) +"," + str(expression.contenu) +"," + str(expression.nature) + ")"
         #c.execute(sql)
-        c.execute(sql)
+        #c.execute(sql)
         #c.execute("select name from BDD.sqlite where type = 'table'")
-        print(c.fetchall())        
+        #print(c.fetchall())        
         
         conn.commit()
         conn.close()
@@ -332,15 +397,14 @@ class Modele():
         path = 'BDD.sqlite'
         conn = sqlite3.connect(path)
         c = conn.cursor()
-        expression.type
         table = "Mots"
-        sql = "insert into " + table +  " (Types, Emplacement, Contenu, Nature) VALUES (" + str(expression.type) +"," + str(expression.emplacement) +"," + str(expression.contenu) +"," + str(expression.nature) + ")"
+        #sql = "insert into " + table +  " (Types, Emplacement, Contenu, Nature) VALUES (" + str(expression.type) +"," + str(expression.emplacement) +"," + str(expression.contenu) +"," + str(expression.nature) + ")"
         #c.execute(sql)
-        c.execute(sql)
+        #c.execute(sql)
         #c.execute("select name from BDD.sqlite where type = 'table'")
         #tupleBD = c.fetchall()        
         # pour fin de tests (a effacer)
-        tupleBD = ((1,"Explicite",null,"allo","Verbe"),(1,"Explicite",null,"allo","Verbe"))
+        tupleBD = ((1,"Explicite","","allo","Verbe"),(1,"Explicite","","allo","Verbe"))
         conn.commit()
         conn.close()
         
