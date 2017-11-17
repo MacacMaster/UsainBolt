@@ -17,8 +17,8 @@ class Vue():
                 
         self.ecranMandat()
         self.ecranCommande()
-        self.explorateurFichiers(self.text)
-        
+		self.ecranAnalyse()
+		self.explorateurFichiers(self.text)        
         #menu deroulante
         self.filemenu = Menu(menubar, tearoff=0)
         self.filemenu.add_command(label="Open", command=hello)
@@ -57,29 +57,28 @@ class Vue():
         self.canCommande.create_window(650,70,window=self.btnSupplementaire,width=110,height=30)
     
     def ecranAnalyse(self):
-        pass
-     
+        self.frameAnalyse=Frame(self.fenetre, width=self.largeurMandat, height=self.hauteurTotale/2, bg="steelblue", padx=10,pady=10)
+        self.frameAnalyse.pack(fill=X)
+        self.canAnalyse=Canvas(self.frameAnalyse, height=100, bg="light gray")
+        self.canAnalyse.pack(fill=X)
         
-        #Affichage du mandat
-    
-    
-    def explorateurFichiers(self,text):
-        #ouvrir un fichier
-        # filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt'),('all files','.*')])
-        fonctionne = True
-        filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt')])
-        try:
-            fichier = open(filename, "r")
-        except FileNotFoundError:
-            fonctionne = False
-            print("Aucun fichier choisi!")
-        if fonctionne:  
-            content = fichier.read()
-            fichier.close()
-            text.insert("%d.%d" %(1,0),content)
-    
-    
         
+    
+    
+		def explorateurFichiers(self,text):
+		        #ouvrir un fichier
+		        # filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt'),('all files','.*')])
+		        fonctionne = True
+		        filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt')])
+		        try:
+		            fichier = open(filename, "r")
+		        except FileNotFoundError:
+		            fonctionne = False
+		            print("Aucun fichier choisi!")
+		        if fonctionne:  
+		            content = fichier.read()
+		            fichier.close()
+		            text.insert("%d.%d" %(1,0),content)        
     def tagging(self,event):
         # get the index of the mouse click
         index = self.text.index("@%s,%s" % (event.x, event.y))
@@ -92,7 +91,7 @@ class Vue():
         #self.text.tag_remove(str("jaune"),str(index),str(index+1))
          
         self.text.tag_add("jaune", "@%d,%d" % (event.x, event.y))   
-        self.propagateTag(event)
+        #self.propagateTag(event)
         self.specialEffect()
         self.parent.modele.ajouter(self.frameMandat)
         
