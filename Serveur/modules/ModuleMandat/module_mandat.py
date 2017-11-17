@@ -18,7 +18,6 @@ class Vue():
         self.fenetre = Frame(master=self.root, width=self.largeurTotale, height=self.hauteurTotale, bg="steelblue")
         self.fenetre.pack()
         self.text = ""
-        self.mot=""
                       
         self.ecranMandat()
         self.ecranCommande()
@@ -48,7 +47,7 @@ class Vue():
         #end = self.text.index("sel.last")
         fonctionne = True
         try:
-            self.mot = self.text.selection_get()
+            mot = self.text.selection_get()
             print("11")
         except BaseException:
             fonctionne = False
@@ -56,9 +55,9 @@ class Vue():
             
         if fonctionne:
                 
-            self.mot = self.text.selection_get()
+            mot = self.text.selection_get()
             self.tfExpression.delete(0,END)
-            self.tfExpression.insert(0,self.mot)
+            self.tfExpression.insert(0,mot)
             self.canCommande.create_window(400,30,window=self.tfExpression,width=600,height=20)
             '''
         # obtenir l'index du click
@@ -128,9 +127,8 @@ class Vue():
             self.parent.modele.uneExpression.nature="Attribut"
             print("choix attribut")
         
-        if self.mot==self.tfExpression.get(): #test s'il y a eu modification dans la textEntry
-            print("Ajout a la liste explicite!")
-            self.uneExpression=Expression()
+        if self.parent.modele.uneExpression.modif==0:
+            print("Ajout a la liste!")
         
     def choixType(self,choix):
         if self.parent.modele.uneExpression.nature!=NULL:
@@ -245,7 +243,7 @@ class Expression():
         self.nature=NULL
         self.contenu=NULL
         self.emplacement=NULL
-       
+        self.modif=0 #permet de verifier une modificatio manuelle a ete apportee dans le textbox
         
 
   
@@ -350,17 +348,36 @@ class Modele():
 
     def insertionSQL(self, expression):  
         path = 'BDD.sqlite'
-        conn = sqlite3.connect('path')
+        conn = sqlite3.connect(path)
         c = conn.cursor()
         expression.type
         table = "Mots"
-        #sql = "insert into " + table +  " (Types, Emplacement, Contenu, Nature) VALUES (" + str(expression.type) +"," + str(expression.emplacement) +"," + str(expression.contenu) +"," + str(expression.nature) + ")"
+        sql = "insert into " + table +  " (Types, Emplacement, Contenu, Nature) VALUES (" + str(expression.type) +"," + str(expression.emplacement) +"," + str(expression.contenu) +"," + str(expression.nature) + ")"
         #c.execute(sql)
-        c.execute("select name from BDD.sqlite where type = 'table'")
+        c.execute(sql)
+        #c.execute("select name from BDD.sqlite where type = 'table'")
         print(c.fetchall())        
         
         conn.commit()
         conn.close()
+        
+    def lectureSQL(self):
+        path = 'BDD.sqlite'
+        conn = sqlite3.connect(path)
+        c = conn.cursor()
+        expression.type
+        table = "Mots"
+        sql = "insert into " + table +  " (Types, Emplacement, Contenu, Nature) VALUES (" + str(expression.type) +"," + str(expression.emplacement) +"," + str(expression.contenu) +"," + str(expression.nature) + ")"
+        #c.execute(sql)
+        c.execute(sql)
+        #c.execute("select name from BDD.sqlite where type = 'table'")
+        #tupleBD = c.fetchall()        
+        # pour fin de tests (a effacer)
+        tupleBD = ((1,"Explicite",null,"allo","Verbe"),(1,"Explicite",null,"allo","Verbe"))
+        conn.commit()
+        conn.close()
+        
+        return tupleBD
 
 
 class Controleur():
