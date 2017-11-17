@@ -23,7 +23,7 @@ class Vue():
         self.frameMandat = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
         self.frameMandat.pack()
         self.text = Text(self.frameMandat, width=100, height=20)
-        self.text.insert("%d.%d" %(0,1),"User-defined marks are named positions in the text. INSERT and CURRENT are predefined marks, but you can also create your own marks. See below for more information.")
+        self.text.insert("%d.%d" %(0,1),"Texte par defaut du mandat")
         self.text.bind("<Button-1>",self.tagging)
         self.text.pack()
         
