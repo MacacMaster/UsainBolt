@@ -20,13 +20,13 @@ class Vue():
         self.ecranCommande()
         
         self.ecranAnalyse()
-        self.explorateurFichiers(self.text) 
+        #self.explorateurFichiers(self.text) 
                
         #menu deroulante
         menubar = Menu(self.root)
         self.filemenu = Menu(menubar, tearoff=0)
-        self.filemenu.add_command(label="Enregistrer", command=hello)
-        self.filemenu.add_command(label="Charger un fichier", command=hello)
+        #self.filemenu.add_command(label="Enregistrer", command=hello)
+        #self.filemenu.add_command(label="Charger un fichier", command=hello)
 
         
     def ecranMandat(self):
@@ -63,9 +63,17 @@ class Vue():
     def ecranAnalyse(self):
         self.frameAnalyse=Frame(self.fenetre, width=self.largeurMandat, height=self.hauteurTotale/2, bg="steelblue", padx=10,pady=10)
         self.frameAnalyse.pack(fill=X)
-        self.canAnalyse=Canvas(self.frameAnalyse, height=100, bg="light gray")
+        self.canAnalyse=Canvas(self.frameAnalyse, height=500, bg="light gray")
         self.canAnalyse.pack(fill=X)
         
+        self.labelVide=Label(self.frameAnalyse, text="Supplementaire", width=100, height=50, bg="white", relief=RAISED )
+        self.canAnalyse.create_window(75,40,window=self.labelVide, width=100, height=40)
+        self.labelObjet=Label(self.frameAnalyse, text="Objet", width=220, height=50, bg="white",relief=RAISED )
+        self.canAnalyse.create_window(235,40,window=self.labelObjet, width=220, height=40)
+        self.labelAction=Label(self.frameAnalyse, text="Action", width=220, height=50, bg="white",relief=RAISED )
+        self.canAnalyse.create_window(455,40,window=self.labelAction, width=220, height=40)
+        self.labelAttribut=Label(self.frameAnalyse, text="Attribut", width=220, height=50, bg="white",relief=RAISED )
+        self.canAnalyse.create_window(675,40,window=self.labelAttribut, width=220, height=40)
         
         
     
