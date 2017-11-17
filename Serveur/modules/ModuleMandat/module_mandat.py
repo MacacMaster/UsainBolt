@@ -135,9 +135,9 @@ class Vue():
         
               
     def tagging(self,event):
-        # get the index of the mouse click
+        # obtenir l'index du click
         index = self.text.index("@%s,%s" % (event.x, event.y))
-        # get the indices of all "adj" tags
+        # objenir la caractere qui correspond au click
         char = (self.parent.vue.text.get(index))
         if (char != '\n'):
             tag_indices = list(self.text.tag_ranges("jaune"))
