@@ -45,11 +45,21 @@ class Vue():
         #end = self.text.index('@%s,%s wordend' % (event.x, event.y)) 
         #start = self.text.index("sel.first")
         #end = self.text.index("sel.last")
-        mot = self.text.selection_get()
-        self.tfExpression.delete(0,END)
-        self.tfExpression.insert(0,mot)
-        self.canCommande.create_window(400,30,window=self.tfExpression,width=600,height=20)
-        '''
+        fonctionne = True
+        try:
+            mot = self.text.selection_get()
+            print("11")
+        except BaseException:
+            fonctionne = False
+            print("22")
+            
+        if fonctionne:
+                
+            mot = self.text.selection_get()
+            self.tfExpression.delete(0,END)
+            self.tfExpression.insert(0,mot)
+            self.canCommande.create_window(400,30,window=self.tfExpression,width=600,height=20)
+            '''
         # obtenir l'index du click
         index = self.text.index("@%s,%s" % (event.x, event.y))
         # objenir la caractere qui correspond au click
