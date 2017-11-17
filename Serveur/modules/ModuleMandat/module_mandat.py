@@ -15,10 +15,12 @@ class Vue():
         self.fenetre.pack()
         self.text = ""
                 
+        
         self.ecranMandat()
         self.ecranCommande()
-		self.ecranAnalyse()
-		self.explorateurFichiers(self.text)        
+        self.ecranAnalyse()
+        self.explorateurFichiers(self.text) 
+               
     def ecranMandat(self):
         self.frameMandat = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
         self.frameMandat.pack()
@@ -57,22 +59,24 @@ class Vue():
         self.canAnalyse.pack(fill=X)
         
         
+        
     
-    
-		def explorateurFichiers(self,text):
-		        #ouvrir un fichier
-		        # filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt'),('all files','.*')])
-		        fonctionne = True
-		        filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt')])
-		        try:
-		            fichier = open(filename, "r")
-		        except FileNotFoundError:
-		            fonctionne = False
-		            print("Aucun fichier choisi!")
-		        if fonctionne:  
-		            content = fichier.read()
-		            fichier.close()
-		            text.insert("%d.%d" %(1,0),content)        
+	def explorateurFichiers(self, text):
+    #ouvrir un fichier
+    # filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt'),('all files','.*')])
+        fonctionne = True
+        filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt')])
+        try:
+            fichier = open(filename, "r")
+        except FileNotFoundError:
+            fonctionne = False
+            print("Aucun fichier choisi!")
+        if fonctionne:  
+            content = fichier.read()
+            fichier.close()
+            text.insert("%d.%d" %(1,0),content)
+        
+                        
     def tagging(self,event):
         # get the index of the mouse click
         index = self.text.index("@%s,%s" % (event.x, event.y))
@@ -96,23 +100,6 @@ class Vue():
   
     def specialEffect(self):
         self.text.tag_config('jaune', background='yellow')
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   
   
