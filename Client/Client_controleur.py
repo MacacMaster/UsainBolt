@@ -11,7 +11,7 @@ class Controleur():
     def __init__(self):
         
         #Debug: Ouvre automatiquement le Serveur Controleur  
-        pid1 = Popen(["C:\\Python34\\Python.exe", "../Serveur/Serveur_controleur.py"],shell=1).pid
+        #pid1 = Popen(["C:\\Python34\\Python.exe", "../Serveur/Serveur_controleur.py"],shell=1).pid
         #Debug : Serveur BD refuses connection
         self.clientIP = self.chercherIP()
         self.serveur=None
