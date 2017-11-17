@@ -56,5 +56,6 @@ class Vue():
         print("Faire suite a une liste de modules")
         
     def fermerfenetre(self):
+        self.root.destroy()
         print("ONFERME la fenetre")
     

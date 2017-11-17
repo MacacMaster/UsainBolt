@@ -18,6 +18,7 @@ class Vue():
         self.fenetre = Frame(master=self.root, width=self.largeurTotale, height=self.hauteurTotale, bg="steelblue")
         self.fenetre.pack()
         self.text = ""
+        self.mot=""
                       
         self.ecranMandat()
         self.ecranCommande()
@@ -47,7 +48,7 @@ class Vue():
         #end = self.text.index("sel.last")
         fonctionne = True
         try:
-            mot = self.text.selection_get()
+            self.mot = self.text.selection_get()
             print("11")
         except BaseException:
             fonctionne = False
@@ -55,9 +56,9 @@ class Vue():
             
         if fonctionne:
                 
-            mot = self.text.selection_get()
+            self.mot = self.text.selection_get()
             self.tfExpression.delete(0,END)
-            self.tfExpression.insert(0,mot)
+            self.tfExpression.insert(0,self.mot)
             self.canCommande.create_window(400,30,window=self.tfExpression,width=600,height=20)
             '''
         # obtenir l'index du click
@@ -127,16 +128,20 @@ class Vue():
             self.parent.modele.uneExpression.nature="Attribut"
             print("choix attribut")
         
-        if self.parent.modele.uneExpression.modif==0:
-            print("Ajout a la liste!")
+        if self.mot==self.tfExpression.get(): #test s'il y a eu modification dans la textEntry
+            print("Ajout a la liste explicite!")
+            self.uneExpression=Expression()
         
     def choixType(self,choix):
         if self.parent.modele.uneExpression.nature!=NULL:
             if choix==1:
                 self.parent.modele.uneExpression.type="Implicite"
+                print("Ajout a la liste implicite!")
+                self.uneExpression=Expression()
             elif choix==2:
-                self.parent.modele.uneExpression.type="Supplementaire"       
-        else:
+                
+                print("Ajout a la liste implicite!")
+                self.uneExpression=Expression()        else:
             print("Entrez une nature de mot ") #Remplcer par une fenetre avertissement ou autre 
         #appel de la fonction SQL pour enregistrer dans la BD
         self.parent.modele.insertionSQL(self.parent.modele.uneExpression) 
@@ -239,7 +244,7 @@ class Expression():
         self.nature=NULL
         self.contenu=NULL
         self.emplacement=NULL
-        self.modif=0 #permet de verifier une modificatio manuelle a ete apportee dans le textbox
+       
         
 
   
