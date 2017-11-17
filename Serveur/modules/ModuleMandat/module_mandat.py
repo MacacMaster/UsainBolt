@@ -84,7 +84,9 @@ class Vue():
         self.frameMandat = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
         self.frameMandat.pack()
         self.text = Text(self.frameMandat, width=100, height=20)
-        texteInitial = self.texteInitial()
+        #le texte initial est le texte préloadé de la derniere enregistrement
+        #texteInitial = self.texteInitial()
+        texteInitial = ""
         self.text.insert("%d.%d" %(0,1),texteInitial)
         #self.text.bind("<Button-1>",self.tagging)
         self.text.bind("<ButtonRelease-1>", self.dragging)
@@ -116,6 +118,7 @@ class Vue():
         self.canCommande.create_window(650,70,window=self.btnSupplementaire,width=110,height=30)
     
     
+    
     def choixNature(self,choix):
         if choix==1:
             self.parent.modele.uneExpression.nature="Objet"
@@ -134,12 +137,13 @@ class Vue():
         if self.parent.modele.uneExpression.nature!=NULL:
             if choix==1:
                 self.parent.modele.uneExpression.type="Implicite"
+                print("Ajout a la liste implicite!")
+                self.uneExpression=Expression()
             elif choix==2:
-                self.uneExpression=Expression()        
-		else:
                 print("Ajout a la liste implicite!")
                 self.uneExpression=Expression()        
-        else:            print("Entrez une nature de mot ") #Remplcer par une fenetre avertissement ou autre 
+        else:
+            print("Entrez une nature de mot ") #Remplcer par une fenetre avertissement ou autre 
         #appel de la fonction SQL pour enregistrer dans la BD
         
         #self.parent.modele.insertionSQL(self.parent.modele.uneExpression) 
@@ -251,43 +255,6 @@ class Modele():
         self.parent=parent
         self.creerTables() # a enlever (tests)
         self.uneExpression=Expression()
-        self.tupleBD=NULL
-        self.listeExpObj=[]
-        self.listeExpAct=[]
-        self.listeExpAtt=[]
-        self.listeImpObj=[]
-        self.listeImpAct=[]
-        self.listeImpAtt=[]
-        self.listeSupObj=[]
-        self.listeSupAct=[]
-        self.listeSupAtt=[]
-        
-        
-    def ajoutListe(self):
-        for i in range(0,len(tupleBD)): 
-            if tupleBD[i][1]=="Explicite":
-                if tupleBD[i][4]=="Objet":
-                    self.listeExpObj.append(tupleBD[i][3])
-                if tupleBD[i][4]=="Action":
-                    self.listeExpAct.append(tupleBD[i][3])
-                if tupleBD[i][4]=="Attribut":
-                    self.listeExpAtt.append(tupleBD[i][3])
-                
-            if tupleBD[i][1]=="Implicite":
-                if tupleBD[i][4]=="Objet":
-                    self.listeImpObj.append(tupleBD[i][3])
-                if tupleBD[i][4]=="Action":
-                    self.listeImpAct.append(tupleBD[i][3])
-                if tupleBD[i][4]=="Attribut":
-                    self.listeImpAtt.append(tupleBD[i][3])
-                
-            if tupleBD[i][1]=="Supplementaire":
-                if tupleBD[i][4]=="Objet":
-                    self.listeSupObj.append(tupleBD[i][3])
-                if tupleBD[i][4]=="Action":
-                    self.listeSupAct.append(tupleBD[i][3])
-                if tupleBD[i][4]=="Attribut":
-                    self.listeSupAtt.append(tupleBD[i][3])
         
     """def ajouter(self,canva):
         self.mots = []
@@ -328,7 +295,7 @@ class Modele():
         conn.commit()
         conn.close()
         
-        
+    def updateLesListes(self):    
             
     def explorateurFichiers(self,text):
         #ouvrir un fichier
