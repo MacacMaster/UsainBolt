@@ -4,6 +4,7 @@ from tkinter import *
 from tkinter.filedialog import *
 import sqlite3
 import time
+from _overlapped import NULL
 
 class Vue():
     def __init__(self, parent):
@@ -38,7 +39,36 @@ class Vue():
         #pour enlever les guillemets au debut et a la fin du mot
         mot = mot[1:-1]
         return mot
-        
+      
+    def dragging(self,event):
+        #start = self.text.index('@%s,%s wordstart' % (event.x, event.y))
+        #end = self.text.index('@%s,%s wordend' % (event.x, event.y)) 
+        #start = self.text.index("sel.first")
+        #end = self.text.index("sel.last")
+        mot = self.text.selection_get()
+        self.tfExpression.delete(0,END)
+        self.tfExpression.insert(0,mot)
+        self.canCommande.create_window(400,30,window=self.tfExpression,width=600,height=20)
+        '''
+        # obtenir l'index du click
+        index = self.text.index("@%s,%s" % (event.x, event.y))
+        # objenir la caractere qui correspond au click
+        char = (self.parent.vue.text.get(index))
+        if (char != '\n'):
+            tag_indices = list(self.text.tag_ranges("jaune"))
+            #enlever le tag "jaune" qui se trouve dans l'index choisi
+            #index2 = index+1 
+            #self.text.tag_remove(str("jaune"),str(index),str(index+1))
+             
+            self.text.tag_add("jaune", "@%d,%d" % (event.x, event.y))   
+            self.propagateTag(event)
+            self.specialEffect()
+            self.parent.modele.ajouter(self.frameMandat)
+            mot = self.choisirMot(event)
+            self.tfExpression.delete(0,END)
+            self.tfExpression.insert(0,mot)           
+            self.canCommande.create_window(400,30,window=self.tfExpression,width=600,height=20)
+            '''
     
     def ecranMandat(self):
         self.frameMandat = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
@@ -46,7 +76,8 @@ class Vue():
         self.text = Text(self.frameMandat, width=100, height=20)
         texteInitial = self.texteInitial()
         self.text.insert("%d.%d" %(0,1),texteInitial)
-        self.text.bind("<Button-1>",self.tagging)
+        #self.text.bind("<Button-1>",self.tagging)
+        self.text.bind("<ButtonRelease-1>", self.dragging)
         self.text.pack()
            
     def ecranCommande(self):
@@ -54,24 +85,45 @@ class Vue():
         self.frameCommande.pack(fill=X)
         self.canCommande=Canvas(self.frameCommande, height=100, bg="light gray")
         self.canCommande.pack(fill=X)
+        
         #Entree de l'expression
-        #self.lblExpression=Label(self.frameCommande, text="Expression:", padx=30, pady=10, bg="light gray")
-        #self.lblExpression.pack(side=LEFT)
         self.tfExpression=Entry(self.canCommande, width=100)
         self.tfExpression.insert(0, "Cliquer sur un mot")
         self.canCommande.create_window(400,30,window=self.tfExpression,width=600,height=20)
         
-        self.btnObjet=Button(self.frameCommande, text="Objet", width=30)
+        #Boutons de nature
+        self.btnObjet=Button(self.frameCommande, text="Objet", width=30, command=lambda:self.choixNature(1))
         self.canCommande.create_window(150,70,window=self.btnObjet,width=110,height=30)
-        self.btnAction=Button(self.frameCommande, text="Action", width=30)
+        self.btnAction=Button(self.frameCommande, text="Action", width=30, command=lambda:self.choixNature(2))
         self.canCommande.create_window(275,70,window=self.btnAction,width=110,height=30)
-        self.btnAttribut=Button(self.frameCommande, text="Attribut", width=30)
+        self.btnAttribut=Button(self.frameCommande, text="Attribut", width=30, command=lambda:self.choixNature(3))
         self.canCommande.create_window(400,70,window=self.btnAttribut,width=110,height=30)
-        self.btnImplicite=Button(self.frameCommande, text="Implicite", width=30)
+        
+        #Boutons de type
+        self.btnImplicite=Button(self.frameCommande, text="Implicite", width=30, bg="light blue", command=lambda:self.choixType(1))
         self.canCommande.create_window(525,70,window=self.btnImplicite,width=110,height=30)
-        self.btnSupplementaire=Button(self.frameCommande, text="Supplementaire", width=30)
+        self.btnSupplementaire=Button(self.frameCommande, text="Supplementaire", width=30, bg="light blue", command=lambda:self.choixType(2))
         self.canCommande.create_window(650,70,window=self.btnSupplementaire,width=110,height=30)
     
+    
+    def choixNature(self,choix):
+        if choix==1:
+           Expression.nature="Objet"
+           print("choix objet")
+        elif choix==2:
+            Expression.nature="Action"
+            print("choix action")
+        elif choix==3:
+            Expression.nature="Attribut"
+            print("choix attribut")
+        
+   
+    def choixType(self,choix):
+        if choix==1:
+            Expression.type="Implicite"
+        elif choix==2:
+            Expression.type="Supplementaire"
+        
    
     def ecranAnalyse(self):
         self.frameAnalyse=Frame(self.fenetre, width=self.largeurMandat, height=self.hauteurTotale/2, bg="steelblue", padx=10,pady=10)
@@ -165,6 +217,14 @@ class Vue():
         self.text.tag_config('jaune', background='yellow')
   
 
+class Expression():
+    def __init__(self):
+        self.type="Explicite"
+        self.nature=null
+        self.contenu=null
+        self.emplacement=null
+        self.modif=false #permet de verifier une modificatio manuelle a ete apportee dans le textbox
+        
 
   
 class Modele():
