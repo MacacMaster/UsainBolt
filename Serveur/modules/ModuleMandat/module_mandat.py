@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter.filedialog import *
+import sqlite3
 import time
 
 class Vue():
@@ -20,13 +21,13 @@ class Vue():
         self.ecranCommande()
         
         self.ecranAnalyse()
-        self.explorateurFichiers(self.text) 
+        #self.explorateurFichiers(self.text) 
                
         #menu deroulante
-        menubar = Menu(self.root)
-        self.filemenu = Menu(menubar, tearoff=0)
-        self.filemenu.add_command(label="Enregistrer", command=hello)
-        self.filemenu.add_command(label="Charger un fichier", command=hello)
+        self.menubar = Menu(self.root)
+        self.menubar.add_command(label="Enregistrer", command= lambda: self.parent.modele.enregistrer(self.text))
+        self.menubar.add_command(label="Charger un fichier", command= lambda: self.parent.modele.explorateurFichiers(self.text))
+        self.root.config(menu=self.menubar)
 
         
     def ecranMandat(self):
@@ -69,20 +70,7 @@ class Vue():
         
         
     
-    def explorateurFichiers(self,text):
-        #ouvrir un fichier
-        # filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt'),('all files','.*')])
-        fonctionne = True
-        filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt')])
-        try:
-            fichier = open(filename, "r")
-        except FileNotFoundError:
-            fonctionne = False
-            print("Aucun fichier choisi!")
-        if fonctionne:  
-            content = fichier.read()
-            fichier.close()
-            text.insert("%d.%d" %(1,0),content)
+
         
                         
     def tagging(self,event):
@@ -141,7 +129,32 @@ class Modele():
             stop = ranges[i+1]
             self.mots.append(( (repr(self.parent.vue.text.get(start, stop))) ))
     
+    def enregistrer(self,texteMandat):
+        #texteMandat = texteMandat.get(1.0,'end-1c')
+        texteMandat = texteMandat.get(1.0,'end-1c')
+        #print(texteMandat)
+        conn = sqlite3.connect('donnees.db')
+        c = conn.cursor()
+        #pour des fins de tests
+        c.execute('''DELETE FROM mandats''')
+        c.execute('INSERT INTO mandats VALUES(?)', (texteMandat,))
+        conn.commit()
+        conn.close()
             
+    def explorateurFichiers(self,text):
+        #ouvrir un fichier
+        # filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt'),('all files','.*')])
+        fonctionne = True
+        filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt')])
+        try:
+            fichier = open(filename, "r")
+        except FileNotFoundError:
+            fonctionne = False
+            print("Aucun fichier choisi!")
+        if fonctionne:  
+            content = fichier.read()
+            fichier.close()
+            text.insert("%d.%d" %(1,0),content)
 
 class Controleur():
     def __init__(self):
