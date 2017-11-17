@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 from tkinter import *
 from tkinter.filedialog import *
 import sqlite3
@@ -35,7 +37,9 @@ class Vue():
         start = self.text.index('@%s,%s wordstart' % (event.x, event.y))
         stop = self.text.index('@%s,%s wordend' % (event.x, event.y))
         mot = repr(self.text.get(start, stop))
-        print(mot)
+        #pour enlever les guillemets au debut et a la fin du mot
+        mot = mot[1:-1]
+        return mot
         
     
     def ecranMandat(self):
@@ -125,18 +129,25 @@ class Vue():
         # get the index of the mouse click
         index = self.text.index("@%s,%s" % (event.x, event.y))
         # get the indices of all "adj" tags
-        tag_indices = list(self.text.tag_ranges("jaune"))
-        #enlever le tag "jaune" qui se trouve dans l'index choisi
-        #index2 = index+1 
-        #self.text.tag_remove(str("jaune"),str(index),str(index+1))
-         
-        self.text.tag_add("jaune", "@%d,%d" % (event.x, event.y))   
-        self.propagateTag(event)
-        self.specialEffect()
-        self.parent.modele.ajouter(self.frameMandat)
-        self.choisirMot(event)
+        char = (self.parent.vue.text.get(index))
+        if (char != '\n'):
+            tag_indices = list(self.text.tag_ranges("jaune"))
+            #enlever le tag "jaune" qui se trouve dans l'index choisi
+            #index2 = index+1 
+            #self.text.tag_remove(str("jaune"),str(index),str(index+1))
+             
+            self.text.tag_add("jaune", "@%d,%d" % (event.x, event.y))   
+            self.propagateTag(event)
+            self.specialEffect()
+            self.parent.modele.ajouter(self.frameMandat)
+            mot = self.choisirMot(event)
+            self.tfExpression.delete(0,END)
+            self.tfExpression.insert(0,mot)
+            
+            self.canCommande.create_window(400,30,window=self.tfExpression,width=600,height=20)
         
     def propagateTag(self, event):
+        
         start = self.text.index('@%s,%s wordstart' % (event.x, event.y))
         end = self.text.index('@%s,%s wordend' % (event.x, event.y))
         self.text.tag_add("jaune",start, end)    
@@ -158,19 +169,7 @@ class Modele():
         lesTags = self.parent.vue.text.tag_ranges("jaune")
         temp = ""
         #data = self.text.get("1.0",END)
-        avant = 0 
-    
-        '''
-        ranges = self.text.tag_ranges("jaune")
-        for i in range(0, len(ranges), 2):
-            start = ranges[i]
-            stop = ranges[i+1]
-            if (repr(self.text.get(start, stop))) != " ":
-                temp += (repr(self.text.get(start, stop)))
-            else:
-                self.mots += temp
-                temp = ""
-        '''    
+        avant = 0   
         ranges = self.parent.vue.text.tag_ranges("jaune")        
         for i in range(0, len(ranges), 2):
             start = ranges[i]
