@@ -127,8 +127,8 @@ class Vue():
             Expression.nature="Attribut"
             print("choix attribut")
         
-        if Expression.modif==false:
-            pass
+        if Expression.modif==0:
+            print("Ajout a la liste!")
         
     def choixType(self,choix):
         if Expression.nature!=null:
@@ -239,7 +239,7 @@ class Expression():
         self.nature=null
         self.contenu=null
         self.emplacement=null
-        self.modif=false #permet de verifier une modificatio manuelle a ete apportee dans le textbox
+        self.modif=0 #permet de verifier une modificatio manuelle a ete apportee dans le textbox
         
 
   
@@ -247,6 +247,7 @@ class Modele():
     def __init__(self, parent):
         self.parent=parent
         self.creerTables() # a enlever (tests)
+        self.uneExpression=new Expression()
 
     """def ajouter(self,canva):
         self.mots = []
