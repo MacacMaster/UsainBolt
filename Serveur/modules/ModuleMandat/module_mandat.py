@@ -19,16 +19,12 @@ class Vue():
         self.ecranMandat()
         self.ecranCommande()
         self.ecranAnalyse()
-               
+ 
         self.barreTaches()
 
     def barreTaches(self):
         #menu deroulante
-        self.menubar = Menu(self.root)
-        self.menubar.add_command(label="Enregistrer", command= lambda: self.parent.modele.enregistrer(self.text))
-        self.menubar.add_command(label="Charger un fichier", command= lambda: self.parent.modele.explorateurFichiers(self.text))
-        self.root.config(menu=self.menubar)
-        
+
     def choisirMot(self,event):
         start = self.text.index('@%s,%s wordstart' % (event.x, event.y))
         stop = self.text.index('@%s,%s wordend' % (event.x, event.y))
@@ -71,13 +67,10 @@ class Vue():
     def ecranAnalyse(self):
         self.frameAnalyse=Frame(self.fenetre, width=self.largeurMandat, height=self.hauteurTotale/2, bg="steelblue", padx=10,pady=10)
         self.frameAnalyse.pack(fill=X)
-        self.canAnalyse=Canvas(self.frameAnalyse, height=100, bg="light gray")
+        self.canAnalyse=Canvas(self.frameAnalyse, height=500, bg="light gray")
         self.canAnalyse.pack(fill=X)
         
-    def texteInitial(self):
-        conn = sqlite3.connect('donnees.db')
-        c = conn.cursor()
-        
+
         c.execute('SELECT * FROM mandats')
         texteMandat = c.fetchone()[0]
                

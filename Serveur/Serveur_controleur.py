@@ -16,6 +16,7 @@ class Client(object):
         self.cadreEnAttenteMax=0
         self.actionsEnAttentes={}
         
+        
 class ModeleService(object):
     def __init__(self,pControleur):
         self.controleur=pControleur
@@ -38,8 +39,12 @@ class ControleurServeur():
         self.serveurBD=None
         
     def logInServeur(self, pUsagerIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
+        #Debug
+        pid = Popen(["C:\\Python34\\Python.exe", "../SQL Serveur/ServeurBD_controleur.py"],shell=1).pid       
+         
         ad="http://"+pUsagerIP+":9998"
         print("Connection au serveur BD...")
+
         self.serveurBD=ServerProxy(ad)
         print("Connection serveur BD réussi")
         

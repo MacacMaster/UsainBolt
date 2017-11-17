@@ -8,7 +8,9 @@ import sqlite3
 class ControleurServeurBD():
     def __init__(self):
         self.database = sqlite3.connect('SprintMasterData.db')
+        self.logdb = sqlite3.connect('Logs.db')
         self.curseur = self.database.cursor()
+        self.curseurLogs = self.logdb.cursor()
         
     def chercherClientBD(self, pIdentifiantNom, pIdentifiantOrga, pIdentifiantMotDePasse):
         nomOrgaExiste = False
@@ -42,6 +44,12 @@ class ControleurServeurBD():
             print("Echec de l'authentification")
             return 0
 
+
+
+    def ecrireLog(self):
+        pass
+    
+    
 print("Création du serveur pour la BD...")
 daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9998))
 objetControleurServeurBD=ControleurServeurBD()
