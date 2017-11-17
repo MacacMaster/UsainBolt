@@ -66,6 +66,7 @@ class Vue():
         self.canAnalyse=Canvas(self.frameAnalyse, height=500, bg="light gray")
         self.canAnalyse.pack(fill=X)
         
+        #1ere ligne grille
         self.labelVide=Label(self.frameAnalyse, text="Supplementaire", width=100, height=50, bg="white", relief=RAISED )
         self.canAnalyse.create_window(75,40,window=self.labelVide, width=100, height=40)
         self.labelObjet=Label(self.frameAnalyse, text="Objet", width=220, height=50, bg="white",relief=RAISED )
@@ -74,6 +75,11 @@ class Vue():
         self.canAnalyse.create_window(455,40,window=self.labelAction, width=220, height=40)
         self.labelAttribut=Label(self.frameAnalyse, text="Attribut", width=220, height=50, bg="white",relief=RAISED )
         self.canAnalyse.create_window(675,40,window=self.labelAttribut, width=220, height=40)
+        
+        #2e ligne grille
+        
+        #3e ligne grille
+        
         
         
     
