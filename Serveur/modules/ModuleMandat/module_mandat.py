@@ -38,7 +38,36 @@ class Vue():
         #pour enlever les guillemets au debut et a la fin du mot
         mot = mot[1:-1]
         return mot
-        
+      
+    def dragging(self,event):
+        #start = self.text.index('@%s,%s wordstart' % (event.x, event.y))
+        #end = self.text.index('@%s,%s wordend' % (event.x, event.y)) 
+        #start = self.text.index("sel.first")
+        #end = self.text.index("sel.last")
+        mot = self.text.selection_get()
+        self.tfExpression.delete(0,END)
+        self.tfExpression.insert(0,mot)
+        self.canCommande.create_window(400,30,window=self.tfExpression,width=600,height=20)
+        '''
+        # obtenir l'index du click
+        index = self.text.index("@%s,%s" % (event.x, event.y))
+        # objenir la caractere qui correspond au click
+        char = (self.parent.vue.text.get(index))
+        if (char != '\n'):
+            tag_indices = list(self.text.tag_ranges("jaune"))
+            #enlever le tag "jaune" qui se trouve dans l'index choisi
+            #index2 = index+1 
+            #self.text.tag_remove(str("jaune"),str(index),str(index+1))
+             
+            self.text.tag_add("jaune", "@%d,%d" % (event.x, event.y))   
+            self.propagateTag(event)
+            self.specialEffect()
+            self.parent.modele.ajouter(self.frameMandat)
+            mot = self.choisirMot(event)
+            self.tfExpression.delete(0,END)
+            self.tfExpression.insert(0,mot)           
+            self.canCommande.create_window(400,30,window=self.tfExpression,width=600,height=20)
+            '''
     
     def ecranMandat(self):
         self.frameMandat = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
@@ -46,7 +75,8 @@ class Vue():
         self.text = Text(self.frameMandat, width=100, height=20)
         texteInitial = self.texteInitial()
         self.text.insert("%d.%d" %(0,1),texteInitial)
-        self.text.bind("<Button-1>",self.tagging)
+        #self.text.bind("<Button-1>",self.tagging)
+        self.text.bind("<ButtonRelease-1>", self.dragging)
         self.text.pack()
            
     def ecranCommande(self):
