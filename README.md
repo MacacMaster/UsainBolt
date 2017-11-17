@@ -1,19 +1,18 @@
-# UsainBolt
-CVM SprintMaster 2017
+READ ME SPRINT 1
 
-Team de Feu : 
+Choses faites:
 
-Justine Boulanger
-William Tang
-Charlotte Szende
-Thomas Rodriguez
-Olivier Breton
-Jessica Sénécal
-Marc-André Ramsay
-
-Bob le kraken
-
--Module Cas d'usage
+Design de la base de données
+-deux base de données, une pour chaque serveur.
+Monter le script pour monter les bases de données
+-Utilisation de SQLite.
+Connexion pour le client
+-Nom organisation, nom usager et mot de passe sur une base de données
+Connexion à un serveur
+Connexion à un serveur de base de données
+Module de Log
+Module Mandat
+Module Cas d'usage
 	
 Fonctionne : 
 	-Ajout de cas d'usage
@@ -25,4 +24,5 @@ Fonctionne :
 
 A faire ... 
 	-Pouvoir séparer les cas d'usages pour voir étape par étape ce que l'ordi et la machine doit faire 
+
 
