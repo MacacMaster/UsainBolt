@@ -9,11 +9,17 @@ import os
 
 class Controleur():
     def __init__(self):
+        
+        #Debug: Ouvre automatiquement le Serveur Controleur  
+        pid1 = Popen(["C:\\Python34\\Python.exe", "../Serveur/Serveur_controleur.py"],shell=1).pid
+        #Debug : Serveur BD refuses connection
         self.clientIP = self.chercherIP()
         self.serveur=None
+        #self.log = Log(self,self.clientIP)
         self.vue=Vue(self,self.clientIP)
         self.vue.root.mainloop()
-        
+    
+    #trouve l'IP du client
     def chercherIP(self):
         clientIP = socket.gethostbyname(socket.gethostname())
         print("L'addresse ip du client est: ", clientIP)
@@ -23,6 +29,7 @@ class Controleur():
         self.vue.root.destroy()
         
     def logInClient(self, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
+        #connection au Serveur
         ad="http://"+self.clientIP+":9999"
         print("Connection au serveur Saas en cours...")
         self.serveur=ServerProxy(ad)
