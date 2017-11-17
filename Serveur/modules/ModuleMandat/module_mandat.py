@@ -305,11 +305,17 @@ class Modele():
             fichier.close()
             text.insert("%d.%d" %(1,0),content)
 
+    def insertionSQL(self, expression):
+        
+        conn = sqlite3.connect('BDD.sqlite')
+        c = conn.cursor()
+        expression.type
+        table = "Mots"
+        sql = "insert into " + table +  "(Types, Emplacement, Contenu, Nature) VALUES (" + expression.type +"," + expression.emplacement +"," + expression.contenu +"," + expression.nature + ")"
+        c.execute(sql)
 
-
-
-
-
+        conn.commit()
+        conn.close()
 
 
 class Controleur():
