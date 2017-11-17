@@ -279,7 +279,7 @@ class Modele():
         #texteMandat = texteMandat.get(1.0,'end-1c')
         texteMandat = texteMandat.get(1.0,'end-1c')
         #print(texteMandat)
-        conn = sqlite3.connect('donnees.db')
+        conn = sqlite3.connect('BDD.sqlite')
         c = conn.cursor()
         #pour des fins de tests
         c.execute('''DELETE FROM mandats''')
