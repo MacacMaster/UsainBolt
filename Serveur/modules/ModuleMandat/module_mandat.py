@@ -135,11 +135,11 @@ class Vue():
             if choix==1:
                 self.parent.modele.uneExpression.type="Implicite"
             elif choix==2:
-                self.parent.modele.uneExpression.type="Supplementaire"
-                
+                self.parent.modele.uneExpression.type="Supplementaire"       
         else:
             print("Entrez une nature de mot ") #Remplcer par une fenetre avertissement ou autre 
-        
+        #appel de la fonction SQL pour enregistrer dans la BD
+        self.parent.modele.insertionSQL(self.parent.modele.uneExpression) 
    
     def ecranAnalyse(self):
         self.frameAnalyse=Frame(self.fenetre, width=self.largeurMandat, height=self.hauteurTotale/2, bg="steelblue", padx=10,pady=10)
@@ -305,15 +305,17 @@ class Modele():
             fichier.close()
             text.insert("%d.%d" %(1,0),content)
 
-    def insertionSQL(self, expression):
-        
-        conn = sqlite3.connect('BDD.sqlite')
+    def insertionSQL(self, expression):  
+        path = 'BDD.sqlite'
+        conn = sqlite3.connect('path')
         c = conn.cursor()
         expression.type
         table = "Mots"
-        sql = "insert into " + table +  "(Types, Emplacement, Contenu, Nature) VALUES (" + expression.type +"," + expression.emplacement +"," + expression.contenu +"," + expression.nature + ")"
-        c.execute(sql)
-
+        #sql = "insert into " + table +  " (Types, Emplacement, Contenu, Nature) VALUES (" + str(expression.type) +"," + str(expression.emplacement) +"," + str(expression.contenu) +"," + str(expression.nature) + ")"
+        #c.execute(sql)
+        c.execute("select name from BDD.sqlite where type = 'table'")
+        print(c.fetchall())        
+        
         conn.commit()
         conn.close()
 
