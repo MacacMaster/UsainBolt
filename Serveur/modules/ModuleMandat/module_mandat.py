@@ -18,9 +18,16 @@ class Vue():
         
         self.ecranMandat()
         self.ecranCommande()
+		
         self.ecranAnalyse()
         self.explorateurFichiers(self.text) 
                
+        #menu deroulante
+        self.filemenu = Menu(menubar, tearoff=0)
+        self.filemenu.add_command(label="Open", command=hello)
+        self.filemenu.add_command(label="Save", command=hello)
+
+        
     def ecranMandat(self):
         self.frameMandat = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
         self.frameMandat.pack()
