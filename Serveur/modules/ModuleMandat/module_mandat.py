@@ -20,9 +20,7 @@ class Vue():
                       
         self.ecranMandat()
         self.ecranCommande()
-        self.ecranAnalyse()
- 
-               
+        self.ecranAnalyse()   
         self.barreTaches()
 
     def barreTaches(self):
@@ -124,14 +122,7 @@ class Vue():
         self.listSupAtt=Listbox(self.frameAnalyse,width=220,height=120)
         self.canAnalyse.create_window(675,360,window=self.listSupAtt, width=220, height=120)
         
-        
-        
-        
-        
-        
-        
-        
-        
+
     def texteInitial(self):
         conn = sqlite3.connect('donnees.db')
         c = conn.cursor()
@@ -142,10 +133,7 @@ class Vue():
         conn.close()
         return texteMandat
         
-    
-
-        
-                        
+              
     def tagging(self,event):
         # get the index of the mouse click
         index = self.text.index("@%s,%s" % (event.x, event.y))
@@ -176,10 +164,9 @@ class Vue():
     def specialEffect(self):
         self.text.tag_config('jaune', background='yellow')
   
-  
-  
-  
 
+
+  
 class Modele():
     def __init__(self, parent):
         self.parent=parent
@@ -240,6 +227,13 @@ class Modele():
             content = fichier.read()
             fichier.close()
             text.insert("%d.%d" %(1,0),content)
+
+
+
+
+
+
+
 
 class Controleur():
     def __init__(self):
