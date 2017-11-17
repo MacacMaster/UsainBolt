@@ -18,7 +18,7 @@ class Vue():
         
         self.ecranMandat()
         self.ecranCommande()
-		
+        
         self.ecranAnalyse()
         self.explorateurFichiers(self.text) 
                
