@@ -13,11 +13,11 @@ class Controleur():
         #Debug: Ouvre automatiquement le Serveur Controleur  
         pid1 = Popen(["C:\\Python34\\Python.exe", "../Serveur/Serveur_controleur.py"],cwd='../Serveur',shell=1).pid
         pid2 = Popen(["C:\\Python34\\Python.exe", "../SQL Serveur/ServeurBD_controleur.py"],cwd='../SQL Serveur',shell=1).pid 
-        #Debug : Serveur BD refuses connection
+
         
         self.clientIP = self.chercherIP()
         self.serveur=None
-        self.log=Log(self.clientIP)#,self.serveur)
+        self.log=Log(self,self.clientIP)#,self.serveur)
         #string utilisateur et organisation
         self.utilisateur=None
         self.organisation=None
@@ -34,6 +34,7 @@ class Controleur():
 
     def fermerApplication(self):
         self.vue.root.destroy()
+    
         
     def logInClient(self, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
         #Vérification des informations avant l'envoi au serveur
@@ -42,8 +43,8 @@ class Controleur():
             ad="http://"+self.clientIP+":9999"
             print("Connection au serveur Saas en cours...")
             self.serveur=ServerProxy(ad)
-            self.log.setLogParent(self)
             print("Connection au serveur Saas réussi")
+            #
             reponseServeur = self.serveur.logInServeur(self.clientIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse)
             self.log.setLog(pIdentifiantNomOrga,pIdentifiantNomUsager, "LoginDB")
             if (reponseServeur == 0):

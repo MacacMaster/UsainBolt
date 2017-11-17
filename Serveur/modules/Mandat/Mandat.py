@@ -84,7 +84,7 @@ class Vue():
         self.frameMandat = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
         self.frameMandat.pack()
         self.text = Text(self.frameMandat, width=100, height=20)
-        #le texte initial est le texte prÃ©loadÃ© de la derniere enregistrement
+        #le texte initial est le texte préloadé de la derniere enregistrement
         #texteInitial = self.texteInitial()
         texteInitial = ""
         self.text.insert("%d.%d" %(0,1),texteInitial)
@@ -146,6 +146,7 @@ class Vue():
             print("Entrez une nature de mot ") #Remplcer par une fenetre avertissement ou autre 
         #appel de la fonction SQL pour enregistrer dans la BD
         
+        #self.parent.modele.insertionSQL(self.parent.modele.uneExpression)         
         #self.parent.modele.insertionSQL(self.parent.modele.uneExpression) 
    
     def ecranAnalyse(self):
