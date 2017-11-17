@@ -7,7 +7,7 @@ import sqlite3
 
 class ControleurServeurBD():
     def __init__(self):
-        self.database = sqlite3.connect('SprintMasterData.db')
+        self.database = sqlite3.connect('BDD.sqlite')
         self.logdb = sqlite3.connect('Logs.db')
         self.curseur = self.database.cursor()
         self.curseurLogs = self.logdb.cursor()
@@ -19,19 +19,19 @@ class ControleurServeurBD():
             
         print("Authentification en cours...")
         
-        for nomOrga in self.curseur.execute('SELECT nomOrganisation FROM organisation'):
+        for nomOrga in self.curseur.execute('SELECT Nom FROM organisation'):
             print(str(nomOrga)[2:len(nomOrga)-4])
             if (str(nomOrga)[2:int(len(nomOrga)-4)] == pIdentifiantOrga):
                 nomOrgaExiste = True
                 break
             
-        for nomUsager in self.curseur.execute('SELECT nomUsager FROM organisation'):
+        for nomUsager in self.curseur.execute('SELECT nom FROM usagers'):
             print(str(nomUsager)[2:len(nomUsager)-4])
             if (str(nomUsager)[2:int(len(nomUsager)-4)] == pIdentifiantNom):
                 nomUsaExiste = True
                 break
         
-        for mdp in self.curseur.execute('SELECT motDePasse FROM organisation'):
+        for mdp in self.curseur.execute('SELECT Motdepasse FROM usagers'):
             print(str(mdp)[2:len(mdp)-4])
             if (str(mdp)[2:len(mdp)-4] == pIdentifiantMotDePasse):
                 mdpExiste = True
