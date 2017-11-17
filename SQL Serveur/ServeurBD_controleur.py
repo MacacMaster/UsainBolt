@@ -8,9 +8,7 @@ import sqlite3
 class ControleurServeurBD():
     def __init__(self):
         self.database = sqlite3.connect('BDD.sqlite')
-        self.logdb = sqlite3.connect('Logs.db')
         self.curseur = self.database.cursor()
-        self.curseurLogs = self.logdb.cursor()
         
     def chercherClientBD(self, pIdentifiantNom, pIdentifiantOrga, pIdentifiantMotDePasse):
         nomOrgaExiste = False
@@ -45,9 +43,6 @@ class ControleurServeurBD():
             return 0
 
 
-
-    def ecrireLog(self):
-        pass
     
     
 print("Création du serveur pour la BD...")
