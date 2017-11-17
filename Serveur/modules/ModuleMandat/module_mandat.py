@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter.filedialog import *
 import time
 
 class Vue():
@@ -12,12 +13,11 @@ class Vue():
         self.largeurMandat=200
         self.fenetre = Frame(master=self.root, width=self.largeurTotale, height=self.hauteurTotale, bg="steelblue")
         self.fenetre.pack()
-        
-        
-        
-        
+        self.text = ""
+                
         self.ecranMandat()
         self.ecranCommande()
+        self.explorateurFichiers(self.text)
         
     def ecranMandat(self):
         self.frameMandat = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
@@ -57,7 +57,20 @@ class Vue():
         #Affichage du mandat
     
     
-    
+    def explorateurFichiers(self,text):
+        #ouvrir un fichier
+        # filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt'),('all files','.*')])
+        fonctionne = True
+        filename = askopenfilename(title="Ouvrir votre document",filetypes=[('txt files','.txt')])
+        try:
+            fichier = open(filename, "r")
+        except FileNotFoundError:
+            fonctionne = False
+            print("Aucun fichier choisi!")
+        if fonctionne:  
+            content = fichier.read()
+            fichier.close()
+            text.insert("%d.%d" %(1,0),content)
     
     
         
@@ -75,12 +88,15 @@ class Vue():
         self.text.tag_add("jaune", "@%d,%d" % (event.x, event.y))   
         self.propagateTag(event)
         self.specialEffect()
-        self.ajouter(self.canva)
-        self.updateListe()
+        self.parent.modele.ajouter(self.frameMandat)
         
-        
+    def propagateTag(self, event):
+        start = self.text.index('@%s,%s wordstart' % (event.x, event.y))
+        end = self.text.index('@%s,%s wordend' % (event.x, event.y))
+        self.text.tag_add("jaune",start, end)    
   
-  
+    def specialEffect(self):
+        self.text.tag_config('jaune', background='yellow')
   
   
   
@@ -107,6 +123,29 @@ class Modele():
     def __init__(self, parent):
         self.parent=parent
 
+    def ajouter(self,canva):
+        self.mots = []
+        lesTags = self.parent.vue.text.tag_ranges("jaune")
+        temp = ""
+        #data = self.text.get("1.0",END)
+        avant = 0 
+    
+        '''
+        ranges = self.text.tag_ranges("jaune")
+        for i in range(0, len(ranges), 2):
+            start = ranges[i]
+            stop = ranges[i+1]
+            if (repr(self.text.get(start, stop))) != " ":
+                temp += (repr(self.text.get(start, stop)))
+            else:
+                self.mots += temp
+                temp = ""
+        '''    
+        ranges = self.parent.vue.text.tag_ranges("jaune")        
+        for i in range(0, len(ranges), 2):
+            start = ranges[i]
+            stop = ranges[i+1]
+            self.mots.append(( (repr(self.parent.vue.text.get(start, stop))) ))
     
             
 
@@ -116,7 +155,7 @@ class Controleur():
         self.vue=Vue(self)
         self.vue.root.mainloop()
     
-    
+
         
 if __name__ == '__main__':
     c=Controleur()
