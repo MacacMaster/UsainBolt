@@ -1,5 +1,10 @@
 /*.project
 /*.pydevproject
-/.settings/*.prefs
+/.settings
 /Client/__pycache__/*.pyc
-/Client/projet/__pycache__/*.pyc
+/Client/projet
+/Client/Mandat
+/Client/CasUsage
+/Client/*.sqlite
+/SQL Serveur/*.sqlite
+/Serveur/*.sqlite
