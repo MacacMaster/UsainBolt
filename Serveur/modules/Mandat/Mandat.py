@@ -36,10 +36,10 @@ class Vue():
     def choisirMot(self,event):
         start = self.text.index('@%s,%s wordstart' % (event.x, event.y))
         stop = self.text.index('@%s,%s wordend' % (event.x, event.y))
-        mot = repr(self.text.get(start, stop))
+        self.mot = repr(self.text.get(start, stop))
         #pour enlever les guillemets au debut et a la fin du mot
-        mot = mot[1:-1]
-        return mot
+        self.mot = mot[1:-1]
+        return self.mot
       
     def dragging(self,event):
         #start = self.text.index('@%s,%s wordstart' % (event.x, event.y))
@@ -48,17 +48,15 @@ class Vue():
         #end = self.text.index("sel.last")
         fonctionne = True
         try:
-            mot = self.text.selection_get()
-            print("11")
+            self.mot = self.text.selection_get()
         except BaseException:
             fonctionne = False
-            print("22")
             
         if fonctionne:
                 
-            mot = self.text.selection_get()
+            self.mot = self.text.selection_get()
             self.tfExpression.delete(0,END)
-            self.tfExpression.insert(0,mot)
+            self.tfExpression.insert(0,self.mot)
             self.canCommande.create_window(400,30,window=self.tfExpression,width=600,height=20)
             '''
         # obtenir l'index du click
@@ -129,7 +127,7 @@ class Vue():
             self.parent.modele.uneExpression.nature="Attribut"
         
         if self.mot==self.tfExpression.get():
-            parent.modele.updateExpression()
+            self.parent.modele.updateExpression()
             self.afficheListBox()
             
             
@@ -246,9 +244,9 @@ class Vue():
             self.propagateTag(event)
             self.specialEffect()
             self.parent.modele.ajouter(self.frameMandat)
-            mot = self.choisirMot(event)
+            self.mot = self.choisirMot(event)
             self.tfExpression.delete(0,END)
-            self.tfExpression.insert(0,mot)
+            self.tfExpression.insert(0,self.mot)
             
             self.canCommande.create_window(400,30,window=self.tfExpression,width=600,height=20)
         
@@ -385,6 +383,7 @@ class Modele():
         expression.type
         table = "Mots"
         sql = "insert into " + table +  " (Types, Emplacement, Contenu, Nature) VALUES (" + str(expression.type) +"," + str(expression.emplacement) +"," + str(expression.contenu) +"," + str(expression.nature) + ")"
+        print(sql)
         print("Envoie a la BD")
         #c.execute(sql)
         #c.execute(sql)
@@ -415,10 +414,15 @@ class Modele():
 class Controleur():
     def __init__(self):
         self.modele=Modele(self)
+        #self.serveur = self.connectionServeur()
         self.vue=Vue(self)
         self.vue.root.mainloop()
     
-
+    def connectionServeur(self):
+        ad="http://"+pUsagerIP+":9998"
+        print("Connection au serveur BD...")
+        serveur=ServerProxy(ad)
+        return serveur
         
 if __name__ == '__main__':
     c=Controleur()
