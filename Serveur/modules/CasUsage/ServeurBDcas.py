@@ -6,7 +6,7 @@ class ServeurBDcas():
         self.Etat="NonTerminé"
         self.database = sqlite3.connect('cas.db')
         self.curseur = self.database.cursor()
-        self.curseur.execute("select * from casUsage")
+        #self.curseur.execute("select * from CasUsage")
         self.Id = len(self.curseur.fetchall())
         self.IdScenari=0
         

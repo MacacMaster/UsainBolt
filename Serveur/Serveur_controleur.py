@@ -22,6 +22,7 @@ class ModeleService(object):
         self.controleur=pControleur
         #{Clé outils disponible:}
         self.modulesdisponibles={"projet":"projet","Mandat":"Mandat", "CasUsage" : "CasUsage"}
+
         self.outilsdisponibles={"meta_sql": "meta_sql",}
         self.clients={}
 

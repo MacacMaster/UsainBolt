@@ -63,5 +63,6 @@ class Vue():
         print("Module a venir")
         
     def fermerfenetre(self):
+        self.root.destroy()
         print("ONFERME la fenetre")
     

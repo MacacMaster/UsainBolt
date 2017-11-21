@@ -2,4 +2,6 @@ eclipse.preferences.version=1
 encoding//Client/Client_controleur.py=utf-8
 encoding//SQL\ Serveur/ServeurBD_controleur.py=utf-8
 encoding//Serveur/Serveur_controleur.py=utf-8
+encoding//Serveur/modules/Mandat/Mandat.py=utf-8
 encoding//Serveur/modules/projet/projet_vue.py=utf-8
+encoding//Serveur/outils/meta_sql/meta_sql_vue.py=utf-8
