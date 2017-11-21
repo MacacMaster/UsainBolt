@@ -4,12 +4,28 @@ from _overlapped import NULL
 class ServeurBDcas():
     def __init__(self,pControleur):
         self.Etat="NonTerminé"
-        self.database = sqlite3.connect('cas.db')
-        self.curseur = self.database.cursor()
+        self.database = None
+        self.curseur = None
+        self.creeBd()
+        
         self.curseur.execute("select * from CasUsage")
         self.Id = len(self.curseur.fetchall())
         self.IdScenari=0
+   
+    
+    def creeBd(self):
+        self.database = sqlite3.connect('cas.db')
         
+        self.curseur = self.database.cursor()
+        
+        self.curseur.execute('''CREATE TABLE if NOT EXISTS CasUsage (Id integer,Description text ,Etat text,ScenarioUtilisation_Id integer)''')
+        self.curseur.execute('''CREATE TABLE if NOT EXISTS ScenarioUtilisation (Id integer,Actions text,ProchaineAction integer,ScenarioUtilisation_Id integer)''')
+
+        self.database.commit()
+        
+    def fermerBd(self):
+        self.database.close()
+    
     def modifierCas(self,cas,usager,machine,indice):
 
         self.curseur.execute("UPDATE CasUsage SET Description=? WHERE Id=?", (cas,indice,))
@@ -59,6 +75,7 @@ class ServeurBDcas():
             self.curseur.execute("UPDATE CasUsage SET Etat=? WHERE Id=? AND Etat=?", ("NonTerminé",EtatInitial+1,"Reprendre",))
             self.database.commit()
             return False
+   
         self.database.commit()
     
     def changerEtatReprendre(self,EtatInitial):
@@ -66,8 +83,12 @@ class ServeurBDcas():
         EtatCompare=Etat.fetchone()[0]
         if(EtatCompare=="NonTerminé"):
             self.curseur.execute("UPDATE CasUsage SET Etat=? WHERE Id=? AND Etat=?", ("Reprendre",EtatInitial+1,"NonTerminé",))
+            self.database.commit()
+            return True
         elif(EtatCompare=="Terminé"):
             self.curseur.execute("UPDATE CasUsage SET Etat=? WHERE Id=? AND Etat=?", ("Reprendre",EtatInitial+1,"Terminé",))
+            self.database.commit()
+            return True
         self.database.commit()
         
         
