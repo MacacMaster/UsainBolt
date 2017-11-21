@@ -385,6 +385,7 @@ class Modele():
         expression.type
         table = "Mots"
         sql = "insert into " + table +  " (Types, Emplacement, Contenu, Nature) VALUES (" + str(expression.type) +"," + str(expression.emplacement) +"," + str(expression.contenu) +"," + str(expression.nature) + ")"
+        print("Envoie a la BD")
         #c.execute(sql)
         #c.execute(sql)
         #c.execute("select name from BDD.sqlite where type = 'table'")
