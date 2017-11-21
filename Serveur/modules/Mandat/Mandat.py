@@ -121,14 +121,17 @@ class Vue():
     def choixNature(self,choix):
         if choix==1:
             self.parent.modele.uneExpression.nature="Objet"
+            print("Envoie de la nature Objet dans l'expression: "+self.parent.modele.uneExpression.nature)
         elif choix==2:
             self.parent.modele.uneExpression.nature="Action"
         elif choix==3:
             self.parent.modele.uneExpression.nature="Attribut"
         
+        self.parent.modele.uneExpression.contenu=self.mot
+        
         if self.mot==self.tfExpression.get():
-            self.parent.modele.updateExpression()
-            self.afficheListBox()
+            self.parent.modele.insertionSQL()
+            #self.afficheListBox()
             
             
     
@@ -139,6 +142,7 @@ class Vue():
             elif choix==2:
                self.parent.modele.uneExpression.type="Supplementaire"
             
+            self.parent.modele.uneExpression.contenu=self.mot
             self.parent.modele.updateExpression()
             self.afficheListBox()    
         else:
@@ -262,20 +266,23 @@ class Vue():
 
 class Expression():
     def __init__(self):
+        self.id=NULL
         self.type="Explicite"
         self.nature=NULL
         self.contenu=NULL
         self.emplacement=NULL
-        self.modif=0 #permet de verifier une modificatio manuelle a ete apportee dans le textbox
         
 
   
 class Modele():
     def __init__(self, parent):
         self.parent=parent
-        self.creerTables() # a enlever (tests)
+        #Connection à la bd temporaire
+        database = sqlite3.connect('BDD.sqlite')
+        #Création du curseur de la bd temporaire
+        self.curseur = database.cursor()
         self.uneExpression=Expression()
-        self.tupleBD=self.lectureSQL()
+        #self.tupleBD=self.lectureSQL()
         self.listeExpObj=[]
         self.listeExpAct=[]
         self.listeExpAtt=[]
@@ -333,21 +340,6 @@ class Modele():
         self.uneExpression=Expression()
     
      
-    #tests (a enlever plus tard)        
-    def creerTables(sel):
-        conn = sqlite3.connect('donnees.db')
-        c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS  mots
-                     (mot text)''')
-        c.execute('''CREATE TABLE IF NOT EXISTS  mandats
-                     (mandat text)''')
-        mandat = "<----Regardez les accolades qui sont apparues!---->"
-        c.execute('INSERT INTO mandats VALUES(?)', (mandat,) )
-        c.execute("select name from sqlite_master where type = 'table'")
-        #print(c.fetchall())
-        conn.commit()
-        conn.close()     
-    
     def enregistrer(self,texteMandat):
         #texteMandat = texteMandat.get(1.0,'end-1c')
         texteMandat = texteMandat.get(1.0,'end-1c')
@@ -376,28 +368,18 @@ class Modele():
             fichier.close()
             text.insert("%d.%d" %(1,0),content)
 
-    def insertionSQL(self, expression):  
-        path = 'BDD.sqlite'
-        conn = sqlite3.connect(path)
-        c = conn.cursor()
-        expression.type
-        table = "Mots"
-        sql = "insert into " + table +  " (Types, Emplacement, Contenu, Nature) VALUES (" + str(expression.type) +"," + str(expression.emplacement) +"," + str(expression.contenu) +"," + str(expression.nature) + ")"
+    def insertionSQL(self):  
+        sql = "INSERT INTO Mots (ROWID, TYPES, EMPLACEMENT, CONTENU, NATURE) VALUES (" + str(self.uneExpression.id)+ "," +str(self.uneExpression.type) +"," + str(self.uneExpression.emplacement) +"," + str(self.uneExpression.contenu) +"," + str(self.uneExpression.nature) + ");"
         print(sql)
         print("Envoie a la BD")
-        #c.execute(sql)
-        #c.execute(sql)
-        #c.execute("select name from BDD.sqlite where type = 'table'")
-        #print(c.fetchall())        
         
-        conn.commit()
-        conn.close()
+        
+        self.curseur.execute("INSERT INTO Mots VALUES(?,?,?,?,?)", (self.uneExpression.id,self.uneExpression.type,self.uneExpression.emplacement,self.uneExpression.contenu,self.uneExpression.nature,))
+        print("Envoi avec succes")
+        self.database.commit()
         
     def lectureSQL(self):
-        path = 'BDD.sqlite'
-        conn = sqlite3.connect(path)
-        c = conn.cursor()
-        table = "Mots"
+
         #sql = "insert into " + table +  " (Types, Emplacement, Contenu, Nature) VALUES (" + str(expression.type) +"," + str(expression.emplacement) +"," + str(expression.contenu) +"," + str(expression.nature) + ")"
         #c.execute(sql)
         #c.execute(sql)
@@ -405,8 +387,7 @@ class Modele():
         #tupleBD = c.fetchall()        
         # pour fin de tests (a effacer)
         tupleBD = ((1,"Explicite","","allo","Verbe"),(1,"Explicite","","allo","Verbe"))
-        conn.commit()
-        conn.close()
+        self.database.commit()
         
         return tupleBD
 
@@ -423,6 +404,10 @@ class Controleur():
         print("Connection au serveur BD...")
         serveur=ServerProxy(ad)
         return serveur
+        
+    
+                
+        
         
 if __name__ == '__main__':
     c=Controleur()
