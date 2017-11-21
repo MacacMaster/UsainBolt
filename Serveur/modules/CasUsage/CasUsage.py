@@ -29,11 +29,15 @@ class Controleur():
         
     def envoyerCas(self,cas,usager,machine):
         print(cas,usager,machine)
-        self.serveur.envoyerCas(cas,usager,machine)
+        self.serveur.envoyerCas(cas)
+        self.envoyerScenari(usager, machine)
         #self.curseur.execute("INSERT INTO client VALUES (?,?,?,?,?);", (self.id,cas, usager, machine,self.etat))
        
         #self.database.commit()
         self.vue.mettreAJourListes()
+    def envoyerScenari(self,utlisateur,machine):
+        self.serveur.envoyerScenari(utlisateur,machine)
+        
     def chercherBdcas(self,indice):
         cas=self.serveur.chercherBdcas(indice)
         return cas
@@ -82,7 +86,7 @@ class Vue():
         self.dejaOuvert=False
         self.indiceCasModifier=0
         self.menuInitial()
-        
+      
        
         
     
@@ -117,7 +121,7 @@ class Vue():
         self.btnModifier=Button(self.caneva,text="Modifier",width=20,command=self.indiceDeLaBD)
         self.caneva.create_window(700,550,window=self.btnModifier,width=150,height=20)
         
-        self.bntSupprimer=Button(self.caneva,text="Terminé/NonTerminé",width=20,command=self.supprimer)
+        self.bntSupprimer=Button(self.caneva,text="Terminé/NonTerminé",width=20,command=self.supprimer)#
         self.caneva.create_window(100,550,window=self.bntSupprimer,width=150,height=20)
         
         self.bntReprendre=Button(self.caneva,text="Reprendre",width=20,command=self.reprendre)
@@ -156,7 +160,6 @@ class Vue():
             self.listeetat.activate(i)
             etat2= str(etat)
             if(etat2=="('Reprendre',)"):
-                
                 self.indiceCasModifier=compteur-1
                 self.dejaOuvert=True
                 self.menuModifier()
@@ -172,6 +175,7 @@ class Vue():
     
     def indiceDeLaBD(self):
         self.indiceCasModifier=self.listecas.curselection()[0]
+        print("indice a modifier : ",self.indiceCasModifier)
         self.menuModifier()
     def recevoirDonnees(self,liste):
         pass
@@ -230,8 +234,9 @@ class Vue():
         
         self.bntModifier=Button(self.canevaMod,text="Modifier",width=20,command=self.modifierTexte)
         self.canevaMod.create_window(150,400,window=self.bntModifier,width=150,height=20)
+        
         #self.bntAction=Button(self.canevaMod,text="Prochaine action",width=20,command=self.changerAction)
-        #self.canevaMod.create_window(600,400,window=self.bntAction,width=150,height=20)
+       # self.canevaMod.create_window(600,400,window=self.bntAction,width=150,height=20)
         
     def supprimer(self):
         self.indiceCasModifier=self.listeetat.curselection()[0]
@@ -242,7 +247,6 @@ class Vue():
         self.menuInitial()
         
     def modifierTexte(self):
-        print(self.indiceCasModifier)
         cas=self.labelCasUsage.get()
         usager=self.labelActionUsager.get()
         machine=self.labelActionMachine.get()
