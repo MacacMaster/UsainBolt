@@ -6,7 +6,7 @@ class ServeurBDcas():
         self.Etat="NonTerminé"
         self.database = sqlite3.connect('cas.db')
         self.curseur = self.database.cursor()
-        #self.curseur.execute("select * from CasUsage")
+        self.curseur.execute("select * from CasUsage")
         self.Id = len(self.curseur.fetchall())
         self.IdScenari=0
         
@@ -84,12 +84,12 @@ class ServeurBDcas():
         
     def remplirListeCas(self):
         listeCas=[]
-        for cas in self.curseur.execute('SELECT Description FROM casUsage'):
+        for cas in self.curseur.execute('SELECT Description FROM CasUsage'):
             listeCas.append(cas)
         return listeCas
         
     def remplirListeEtat(self):
         listeEtat=[]
-        for Etat in self.curseur.execute('SELECT Etat FROM casUsage'):
+        for Etat in self.curseur.execute('SELECT Etat FROM CasUsage'):
             listeEtat.append(Etat)
         return listeEtat
