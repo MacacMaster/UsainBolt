@@ -10,7 +10,10 @@ class Controleur():
         self.unReprend=False
         self.vue.root.mainloop()
         print("controleur")
-        
+    
+    
+    def FermerBD(self):
+        self.serveur.fermerBd()
     
     def remplirListeCas(self):
        return self.serveur.remplirListeCas()
@@ -21,19 +24,12 @@ class Controleur():
     def modifierCas(self,cas,usager,machine):
         self.serveur.modifierCas(cas,usager,machine,self.vue.indiceCasModifier+1)
         
-       #self.curseur.execute("UPDATE client SET cas=? WHERE id=?", (cas,self.vue.indiceCasModifier+1,))
-       #self.curseur.execute("UPDATE client SET usager=? WHERE id=?", (usager,self.vue.indiceCasModifier+1,))
-       #self.curseur.execute("UPDATE client SET machine=? WHERE id=?", (machine,self.vue.indiceCasModifier+1,))
-       #self.database.commit()
-        
         
     def envoyerCas(self,cas,usager,machine):
         print(cas,usager,machine)
         self.serveur.envoyerCas(cas)
         self.envoyerScenari(usager, machine)
-        #self.curseur.execute("INSERT INTO client VALUES (?,?,?,?,?);", (self.id,cas, usager, machine,self.etat))
-       
-        #self.database.commit()
+
         self.vue.mettreAJourListes()
     def envoyerScenari(self,utlisateur,machine):
         self.serveur.envoyerScenari(utlisateur,machine)
@@ -52,22 +48,13 @@ class Controleur():
     
     def changerEtat(self,cas):
         self.unReprend=self.serveur.changerEtat(cas)
-        #etat=self.curseur.execute('SELECT etat FROM client WHERE id=?',(self.vue.indiceCasModifier+1,))
-        #etatCompare=etat.fetchone()[0]
-        #if(etatCompare=="NonTerminé"):
-         #   self.curseur.execute("UPDATE client SET etat=? WHERE id=? AND etat=?", ("Terminé",self.vue.indiceCasModifier+1,"NonTerminé",))
-        #elif(etatCompare=="Terminé"):
-        #    self.curseur.execute("UPDATE client SET etat=? WHERE id=? AND etat=?", ("NonTerminé",self.vue.indiceCasModifier+1,"Terminé",))
         self.vue.caneva.forget()
-        #self.database.commit()
         self.vue.menuInitial()
-     ######################################################    
     def changerReprendre(self,etat):
         self.serveur.changerEtatReprendre(etat)
         self.vue.caneva.forget()
         self.vue.menuInitial()
 
-    ######################################################
 class Modele():
     def __init__(self, pControleur):
         self.controleur = pControleur
@@ -133,13 +120,8 @@ class Vue():
 
         self.listecas=Listbox(self.caneva,bg="lightblue",borderwidth=0,relief=FLAT,width=90,height=12)
         self.caneva.create_window(350,350,window=self.listecas)
-       # self.remplirListeEtat()
-       # self.remplirListeCas()
-        #self.remplirListBoxEtat()
-        #self.remplirListBoxCas()
         self.mettreAJourListes()
-    #######################################
-        
+
         if(self.dejaOuvert==False):
             self.ouvrirReprendre()
             
@@ -212,7 +194,7 @@ class Vue():
         self.labelActionUsager=Entry(bg="white")
         self.labelActionMachine=Entry(bg="white")
         self.canevaMod.create_window(650,200,window=self.labelActionMachine,width=150,height=250)
-        #self.controleur.chercherDonnee()
+    
         cas=self.controleur.chercherBdcas(self.indiceCasModifier+1,);
         self.labelCasUsage.insert(END, str (cas))
        
@@ -234,9 +216,7 @@ class Vue():
         
         self.bntModifier=Button(self.canevaMod,text="Modifier",width=20,command=self.modifierTexte)
         self.canevaMod.create_window(150,400,window=self.bntModifier,width=150,height=20)
-        
-        #self.bntAction=Button(self.canevaMod,text="Prochaine action",width=20,command=self.changerAction)
-       # self.canevaMod.create_window(600,400,window=self.bntAction,width=150,height=20)
+    
         
     def supprimer(self):
         self.indiceCasModifier=self.listeetat.curselection()[0]
