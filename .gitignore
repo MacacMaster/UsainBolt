@@ -8,3 +8,4 @@
 /Client/*.sqlite
 /SQL Serveur/*.sqlite
 /Serveur/*.sqlite
+/**/*.db
