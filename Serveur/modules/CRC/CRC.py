@@ -42,20 +42,18 @@ class Vue():
         frame2 = Frame(self.menuGauche)
         frame2.pack()
         
-        #scrollbar
-                
-        listeClasses = Listbox(self.menuGauche, height=25)
-        listeClasses.pack(fill="y")
+        #scrollbar   
+        listeClasses = Listbox(frame2, height=25)
+        listeClasses.pack(side=LEFT,fill="y")
         
         scrollbar = Scrollbar(frame2, orient = "vertical")
         scrollbar.config(command=listeClasses.yview)  
-        scrollbar.pack(side=RIGHT, fill="y")
-
-        
+        scrollbar.pack(side=LEFT,fill="y")
+   
         listeClasses.config(yscrollcommand=scrollbar.set)
           
-        for x in range(30):
-            listeClasses.insert(END, str(x))
+        #for x in range(30):
+        #    listeClasses.insert(END, str(x))
 
         
         frame3 = Frame(self.menuGauche)
@@ -111,6 +109,8 @@ class Vue():
         
         self.menuAjout = Frame(self.menu, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
         self.menuAjout.pack()
+        
+        #zone nom de la classe
         frame1 = Frame(self.menuAjout)
         frame1.pack(fill=X, pady=5)
         
@@ -119,7 +119,77 @@ class Vue():
         
         entryNomClasse = Entry(frame1, text="erer", width=25)
         entryNomClasse.pack(side=LEFT)
-        entryNomClasse.insert();
+        #entryNomClasse.insert(END,"nom de la classe");
+        
+        #zone propriétaire
+        frame2 = Frame(self.menuAjout)
+        frame2.pack(fill=X, pady=5)
+        
+        lblProprietaire = Label(frame2, text="Propriétaire", width=25)
+        lblProprietaire.pack(side=LEFT)  
+        
+        entryProprietaire = Entry(frame2, width=25)
+        entryProprietaire.pack(side=LEFT)
+        #entryNomClasse.insert(END,"nom de la classe");
+        
+        #zone responsabilités et zone collaboration (labels)
+        frame3 = Frame(self.menuAjout)
+        frame3.pack(fill=X, pady=5)
+        
+        lblResponsabilite = Label(frame3, text="Responsabilité", width=25)
+        lblResponsabilite.pack(side=LEFT)  
+        
+        lblCollaboration = Label(frame3, text="Collaboration", width=25)
+        lblCollaboration.pack(side=LEFT)  
+        
+        #zone responsabilités et zone collaboration (champs)
+        frame4 = Frame(self.menuAjout)
+        frame4.pack(fill=X, pady=5)
+        
+        largeur = 55;
+        entryResponsabilite = Entry(frame4, text="", width=15)
+        entryResponsabilite.pack(side=LEFT, padx = largeur)
+        
+        entryCollaboration = Entry(frame4, text="", width=15)
+        entryCollaboration.pack(side=LEFT, padx = largeur)
+        
+          
+        #zone pour les listebox des responsabilités et des collaborations
+        frameDeuxBox = Frame(self.menuAjout)
+        frameDeuxBox.pack()
+        
+        #scrollbar gauche
+        frame6 = Frame(frameDeuxBox)
+        frame6.pack(fill=X, pady=5, side=LEFT)
+        
+        scrollbar = Scrollbar(frame6, orient = "vertical")
+        
+        listeResponsabilites = Listbox(frame6, height=25,yscrollcommand=scrollbar)
+        listeResponsabilites.pack(side=LEFT, fill=BOTH, expand=1)
+        
+        scrollbar.config(command=listeResponsabilites.yview)  
+        scrollbar.pack(side=LEFT,fill="y", expand=1)
+        
+        #scrollbar droite
+        frame5 = Frame(frameDeuxBox)
+        frame5.pack(fill=X, pady=5, side=LEFT)
+        
+        scrollbar = Scrollbar(frame5, orient = "vertical")
+        
+        listeCollaboration = Listbox(frame5, height=25,yscrollcommand=scrollbar)
+        listeCollaboration.pack(side=LEFT, fill=BOTH, expand=1)
+        
+        scrollbar.config(command=listeCollaboration.yview)  
+        scrollbar.pack(side=LEFT,fill="y", expand=1)
+                
+
+        
+        #bouton en bas
+        frame7 = Frame(self.menuAjout)
+        frame7.pack(fill=X, pady=5)
+        
+        boutonConfirmer = Button(frame7, text="Confirmer")
+        boutonConfirmer.pack()
     
 class Modele():
     def __init__(self, parent):
