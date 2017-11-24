@@ -51,7 +51,7 @@ class ControleurServeur():
         identifiantNomUsager = pIdentifiantNomUsager
         identifiantNomOrga = pIdentifiantNomOrga
         identifiantMotDePasse = pIdentifiantMotDePasse
-        
+       # rep = self.serveurBD.selDonnees(Organisation, Nom)
         nomClientTempo = self.chercherClientBD(identifiantNomUsager, identifiantNomOrga, identifiantMotDePasse)
         if (nomClientTempo == 0):
             return 0
