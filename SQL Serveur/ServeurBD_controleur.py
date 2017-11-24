@@ -42,16 +42,10 @@ class ControleurServeurBD():
             print("Echec de l'authentification")
             return 0
         
-    def insProjets():
-        conn= sqlite3.connect('exemple.jmd')
+    def insProjet(self,nomTable,valeurs):
+        conn= sqlite3.connect('BDD.sqlite')
         c = conn.cursor()
-        responsable = ["Justine", "Marco", "Jaunattends","JustinDugas"]
-        organisation = ["Microsoft", "Google", "Amazon", "Oracle", "Alibaba", "Desjardins", "Casino de Montreal"]
-
-        for i in range(0,3000):
-            date = str(random.randrange(1,31)) + '-' + str(random.randrange(1,12)) + '-' + str(random.randrange(2000,2017))
-            s = '''INSERT INTO projet VALUES ('projet_''' + str(i) + '''',''' + "'" + random.choice(organisation) +"'" +''',''' + "'" + date +"'"+''','12-05-2018',''' + "'" + random.choice(responsable) + "'" + ''',0,'Projet bidon')'''
-            c.execute(s)
+        c.execute(s)
         conn.commit()
         conn.close()
 
