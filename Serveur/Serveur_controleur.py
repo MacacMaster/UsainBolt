@@ -9,6 +9,13 @@ from xmlrpc.client import ServerProxy
 from subprocess import Popen
 import os
 
+######################################################
+# TODO:
+# Creer la fonction de redirection vers SQL - doit choisir le serveur approprié avec l'organisation envoye en param
+#
+#
+######################################################
+
 class Client(object):
     def __init__(self,nom, id):
         self.nom=nom
@@ -24,7 +31,7 @@ class ModeleService(object):
         #{Clé outils disponible:}
         self.projetsdisponibles={}
         self.modulesdisponibles={"Mandat":"Mandat",
-                                 "CasUsage":"CasUsage"}# "CasUsage" : "CasUsage"}
+                                 "CasUsage":"CasUsage","PlanificationGlobale":"PlanificationGlobale"}# "CasUsage" : "CasUsage"}
 
         self.outilsdisponibles={"meta_sql": "meta_sql",}
         self.clients={}
