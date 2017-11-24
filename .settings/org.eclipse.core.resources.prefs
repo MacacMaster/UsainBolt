@@ -1,5 +1,6 @@
 eclipse.preferences.version=1
 encoding//Client/Client_controleur.py=utf-8
+encoding//Client/Client_log.py=utf-8
 encoding//SQL\ Serveur/ServeurBD_controleur.py=utf-8
 encoding//Serveur/Serveur_controleur.py=utf-8
 encoding//Serveur/modules/CRC/CRC.py=utf-8

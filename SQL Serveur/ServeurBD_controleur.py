@@ -37,24 +37,30 @@ class ControleurServeurBD():
             
         if (nomOrgaExiste and nomUsaExiste and mdpExiste):
             print("Réussite de l'authentification")
-            return pIdentifiantNom
+            nomOrga = (''+pIdentifiantNom+'',)
+            idOrgaBD = self.curseur.execute("SELECT id FROM Usagers WHERE Organisation_Id = ?", nomOrga)
+            idOrga = idOrgaBD.fetchone()
+            print("id de la personne connectée:", str(idOrga)[1:len(idOrga)-3])
+            return [pIdentifiantNom, str(idOrga)[1:len(idOrga)-3]]
         else:
             print("Echec de l'authentification")
             return 0
         
-    def insProjets():
-        conn= sqlite3.connect('exemple.jmd')
+    def insProjet(self,nomTable,valeurs):
+        conn= sqlite3.connect('BDD.sqlite')
         c = conn.cursor()
-        responsable = ["Justine", "Marco", "Jaunattends","JustinDugas"]
-        organisation = ["Microsoft", "Google", "Amazon", "Oracle", "Alibaba", "Desjardins", "Casino de Montreal"]
-
-        for i in range(0,3000):
-            date = str(random.randrange(1,31)) + '-' + str(random.randrange(1,12)) + '-' + str(random.randrange(2000,2017))
-            s = '''INSERT INTO projet VALUES ('projet_''' + str(i) + '''',''' + "'" + random.choice(organisation) +"'" +''',''' + "'" + date +"'"+''','12-05-2018',''' + "'" + random.choice(responsable) + "'" + ''',0,'Projet bidon')'''
-            c.execute(s)
+        c.execute(s)
         conn.commit()
         conn.close()
 
+    def rechercheProjetsDispo(self, id):
+        print("je cherche des projets")
+        t = (''+str(id)+'',)
+        tabProjet = []
+        for projet in self.curseur.execute('SELECT nom FROM Projets WHERE Organisation_Id =?', t):
+            print (str(projet)[2:len(projet)-4])
+            tabProjet.append(str(projet)[2:len(projet)-4])
+        return tabProjet
 
     
     
