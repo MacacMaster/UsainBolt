@@ -24,7 +24,10 @@ class ModeleService(object):
         #{Clé outils disponible:}
         self.projetsdisponibles={}
         self.modulesdisponibles={"Mandat":"Mandat",
-                                 "CasUsage":"CasUsage"}# "CasUsage" : "CasUsage"}
+                                 "CasUsage":"CasUsage",
+                                 "Maquette":"Maquette",
+                                 "Modelisation":"Modelisation",
+                                 "PlanificationGlobale":"PlanificationGlobale"}
 
         self.outilsdisponibles={"meta_sql": "meta_sql",}
         self.clients={}
@@ -56,14 +59,14 @@ class ControleurServeur():
         #Connection au serveurDB
         ad="http://"+pUsagerIP+":9998"
         print("Connection au serveur BD...")
-        self.serveurBD=ServerProxy(ad)
+        self.serveurBD=ServerProxy(ad,allow_none = 1)
         print("Connection serveur BD réussi")
         
         #variables id
         identifiantNomUsager = pIdentifiantNomUsager
         identifiantNomOrga = pIdentifiantNomOrga
         identifiantMotDePasse = pIdentifiantMotDePasse
-        
+        rep = self.serveurBD.selDonnees("Projets", "Nom")
         clientTempo = self.chercherClientBD(identifiantNomUsager, identifiantNomOrga, identifiantMotDePasse)
         if (clientTempo == 0):
             return 0
@@ -137,7 +140,7 @@ class ControleurServeur():
         return True 
     
 print("Création du serveur...")
-daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9999))
+daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9999),allow_none = 1)
 objetControleurServeur=ControleurServeur()
 daemon.register_instance(objetControleurServeur)
 print("Création du serveur terminé")

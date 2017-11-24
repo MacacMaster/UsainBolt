@@ -10,6 +10,21 @@ class ControleurServeurBD():
         self.database = sqlite3.connect('BDD.sqlite')
         self.curseur = self.database.cursor()
         
+    def insDonnees(self,nomTable,valeurs):
+        conn= sqlite3.connect('BDD.sqlite')
+        c = conn.cursor()
+        c.execute(s)
+        conn.commit()
+        conn.close()
+    
+    def selDonnees(self,nomTable,idCol):
+        conn= sqlite3.connect('BDD.sqlite')
+        c = conn.cursor()
+        c.execute(''' SELECT * from Projets''') 
+        #c.execute('''SELECT ''' +idCol+ ''' from '''+nomTable)
+        print(c.fetchall())
+        conn.close()
+        
     def chercherClientBD(self, pIdentifiantNom, pIdentifiantOrga, pIdentifiantMotDePasse):
         nomOrgaExiste = False
         nomUsaExiste = False
@@ -46,12 +61,8 @@ class ControleurServeurBD():
             print("Echec de l'authentification")
             return 0
         
-    def insProjet(self,nomTable,valeurs):
-        conn= sqlite3.connect('BDD.sqlite')
-        c = conn.cursor()
-        c.execute(s)
-        conn.commit()
-        conn.close()
+
+         
 
     def rechercheProjetsDispo(self, id):
         print("je cherche des projets")
@@ -65,8 +76,11 @@ class ControleurServeurBD():
     
     
 print("Création du serveur pour la BD...")
-daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9998))
+daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9998),allow_none = 1)
 objetControleurServeurBD=ControleurServeurBD()
 daemon.register_instance(objetControleurServeurBD)
 print("Création du serveur BD terminé")
 daemon.serve_forever()
+
+
+

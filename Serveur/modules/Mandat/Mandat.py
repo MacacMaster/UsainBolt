@@ -26,7 +26,7 @@ class Vue():
         self.barreTaches()
 
     def barreTaches(self):
-        #menu deroulante
+        #menu deroulant
 
         self.menubar = Menu(self.root)
         self.menubar.add_command(label="Enregistrer", command= lambda: self.parent.modele.enregistrer(self.text))

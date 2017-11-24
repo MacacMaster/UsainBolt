@@ -8,6 +8,12 @@ from xmlrpc.client import ServerProxy
 from subprocess import Popen
 import os
 
+######################################################
+# TODO 
+# 
+# 
+######################################################
+
 class Controleur():
     def __init__(self):
         #Debug: Ouvre automatiquement le Serveur Controleur  
@@ -16,11 +22,15 @@ class Controleur():
 
         
         self.clientIP = self.chercherIP()
+        #IP Saas
+        self.saasIP=self.clientIP
         self.serveur=None
         self.log=Log(self,self.clientIP)#,self.serveur)
         #string utilisateur et organisation
         self.utilisateur=None
         self.organisation=None
+        #id du projet selectionne
+        self.idProjet="None"
         
         self.vue=Vue(self,self.clientIP)
         self.vue.root.mainloop()
@@ -40,9 +50,9 @@ class Controleur():
         #Vérification des informations avant l'envoi au serveur
         if (pIdentifiantNomOrga !="" and pIdentifiantNomUsager !="" and pIdentifiantMotDePasse !="" ):
             #connection au Serveur
-            ad="http://"+self.clientIP+":9999"
+            ad="http://"+self.saasIP+":9999"
             print("Connection au serveur Saas en cours...")
-            self.serveur=ServerProxy(ad)
+            self.serveur=ServerProxy(ad,allow_none = 1)
             print("Connection au serveur Saas réussi")
             #
             reponseServeur = self.serveur.logInServeur(self.clientIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse)
@@ -52,6 +62,8 @@ class Controleur():
                 self.vue.logInClientFail()
             else:
                 self.log.writeLog("Login Successful")
+                self.utilisateur=pIdentifiantNomUsager
+                self.organisation=pIdentifiantNomOrga
                 self.vue.chargerCentral(reponseServeur[1],reponseServeur[2],reponseServeur[3],reponseServeur[4])
         else:
             self.vue.logInClientFail()
@@ -77,7 +89,23 @@ class Controleur():
                     fiche.write(rep.data)
                     fiche.close()
             chaineappli="."+lieuApp+lieuApp+".py"
-            pid = Popen(["C:\\Python34\\Python.exe", chaineappli],shell=1).pid 
+            #Arguments####################################################################################
+            # self.saasIP=sys.argv[1]
+            # self.utilisateur=sys.argv[2]
+            # self.organisation=sys.argv[3]
+            # self.idProjet=sys.argv[4]
+            # self.clientIP=sys.argv[5]
+            #
+            #
+            #
+            #
+            ############################################################
+            #argumentsServeur=[self.saasIP," ",self.utilisateur,self.organisation,self.idProjet]
+            
+            #Ouvre le programme telecharge
+            pid = Popen(["C:\\Python34\\Python.exe", chaineappli,self.saasIP,self.utilisateur,self.organisation,self.idProjet,self.clientIP],shell=1).pid 
+            #pid = Popen(["C:\\Python34\\Python.exe", chaineappli,argumentsServeur],shell=1).pid 
+            #pid = Popen(["C:\\Python34\\Python.exe", chaineappli],shell=1).pid
         else:
             print("RIEN")
             
