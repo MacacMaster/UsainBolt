@@ -218,9 +218,14 @@ class Modele():
     def lectureSQL(self):
         pass
     
-    def nomsDesClasses(self,):
+    def nomsDesClasses(self):
+        reponse = self.serveur.sel("CRCClasse", "nom")
         
-        return aa;
+        
+        
+        list = self.serveur.sel()
+        return list
+        
 
 class Controleur():
     def __init__(self):
