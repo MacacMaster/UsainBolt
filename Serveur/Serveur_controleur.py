@@ -10,8 +10,9 @@ from subprocess import Popen
 import os
 
 class Client(object):
-    def __init__(self,nom):
+    def __init__(self,nom, id):
         self.nom=nom
+        self.id = id
         self.cadreCourant=0
         self.cadreEnAttenteMax=0
         self.actionsEnAttentes={}
@@ -21,20 +22,31 @@ class ModeleService(object):
     def __init__(self,pControleur):
         self.controleur=pControleur
         #{Clé outils disponible:}
-        self.modulesdisponibles={"projet":"projet","Mandat":"Mandat","CasUsage":"CasUsage"}# "CasUsage" : "CasUsage"}
+        self.projetsdisponibles={}
+        self.modulesdisponibles={"Mandat":"Mandat",
+                                 "CasUsage":"CasUsage"}# "CasUsage" : "CasUsage"}
 
         self.outilsdisponibles={"meta_sql": "meta_sql",}
         self.clients={}
 
-    def creerclient(self,nom):
+    def creerclient(self,nom, id):
         if nom in self.clients.keys(): # on assure un nom unique
             return [0,"Simulation deja en cours"]
         # tout va bien on cree le client et lui retourne la seed pour le random
-        c=Client(nom)
+        c=Client(nom, id)
         self.clients[nom]=c
-        return [1,"Bienvenue",list(self.modulesdisponibles.keys()),list(self.outilsdisponibles.keys())]
-
-
+        tabProjet = self.controleur.rechercheProjetsDispo(id)
+        for i in tabProjet:
+            self.projetsdisponibles[i] = i
+        for i in self.projetsdisponibles:
+            print (i)
+        
+        return [c.id,
+                c.nom,
+                list(self.modulesdisponibles.keys()),
+                list(self.outilsdisponibles.keys()),
+                list(self.projetsdisponibles.keys())
+                ]
 class ControleurServeur():
     def __init__(self):
         self.modele= ModeleService(self)
@@ -52,14 +64,18 @@ class ControleurServeur():
         identifiantNomOrga = pIdentifiantNomOrga
         identifiantMotDePasse = pIdentifiantMotDePasse
         
-        nomClientTempo = self.chercherClientBD(identifiantNomUsager, identifiantNomOrga, identifiantMotDePasse)
-        if (nomClientTempo == 0):
+        clientTempo = self.chercherClientBD(identifiantNomUsager, identifiantNomOrga, identifiantMotDePasse)
+        if (clientTempo == 0):
             return 0
         else:
-            print("Recherche du client terminé. Il s'agit de", nomClientTempo)
-            client = self.modele.creerclient(nomClientTempo)
+            print("Recherche du client terminé. Il s'agit de", clientTempo[0], "qui a pour ID :", clientTempo[1])
+            client = self.modele.creerclient(clientTempo[0], clientTempo[1])
             return client
 
+    def rechercheProjetsDispo(self, id):
+        tabProjet = self.serveurBD.rechercheProjetsDispo(id)
+        return tabProjet
+    
     def finDuProgramme(self):
         daemon.shutdown()
         

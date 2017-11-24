@@ -37,7 +37,11 @@ class ControleurServeurBD():
             
         if (nomOrgaExiste and nomUsaExiste and mdpExiste):
             print("Réussite de l'authentification")
-            return pIdentifiantNom
+            nomOrga = (''+pIdentifiantNom+'',)
+            idOrgaBD = self.curseur.execute("SELECT id FROM Usagers WHERE Organisation_Id = ?", nomOrga)
+            idOrga = idOrgaBD.fetchone()
+            print("id de la personne connectée:", str(idOrga)[1:len(idOrga)-3])
+            return [pIdentifiantNom, str(idOrga)[1:len(idOrga)-3]]
         else:
             print("Echec de l'authentification")
             return 0
@@ -55,6 +59,14 @@ class ControleurServeurBD():
         conn.commit()
         conn.close()
 
+    def rechercheProjetsDispo(self, id):
+        print("je cherche des projets")
+        t = (''+str(id)+'',)
+        tabProjet = []
+        for projet in self.curseur.execute('SELECT nom FROM Projets WHERE Organisation_Id =?', t):
+            print (str(projet)[2:len(projet)-4])
+            tabProjet.append(str(projet)[2:len(projet)-4])
+        return tabProjet
 
     
     
