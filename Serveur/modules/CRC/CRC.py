@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 
+from xmlrpc.client import ServerProxy
 from tkinter import *
 from tkinter.filedialog import *
 import sqlite3
@@ -192,8 +193,9 @@ class Vue():
         boutonConfirmer.pack()
     
 class Modele():
-    def __init__(self, parent):
+    def __init__(self, parent, serveur):
         self.parent=parent
+        self.serveur = serveur
 
     def ajoutListe(self):
         pass
@@ -215,13 +217,26 @@ class Modele():
         
     def lectureSQL(self):
         pass
+    
+    def nomsDesClasses(self,):
+        
+        return aa;
 
 class Controleur():
     def __init__(self):
-        self.modele=Modele(self)
+        #informations du système quand le programme est lancé
+        #self.idClient = 999;
+        self.ip = 999;
+        self.idProjet = 999;
+          
+        #connexion au proxy
+        ad="http://"+str(self.ip)+":9999"
+        self.serveur = ServerProxy(ad)
+        
         #self.serveur = self.connectionServeur()
         self.vue=Vue(self)
         self.vue.root.mainloop()
+        self.modele=Modele(self, self.serveur)
     
     def connectionServeur(self):
         ad="http://"+pUsagerIP+":9998"
