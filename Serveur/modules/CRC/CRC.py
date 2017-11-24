@@ -27,10 +27,6 @@ class Vue():
         self.creerMenuGauche()
         self.creerMenuDroite()
         
-        
-        
-
-        
     def creerMenuGauche(self):
         self.menuGauche = Frame(self.menu, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
         self.menuGauche.pack(side=LEFT)
@@ -44,10 +40,23 @@ class Vue():
         lbl1.pack(side=LEFT, padx=55, pady=5)           
        
         frame2 = Frame(self.menuGauche)
-        frame2.pack(fill=Y)
+        frame2.pack()
         
+        #scrollbar
+                
         listeClasses = Listbox(self.menuGauche, height=25)
-        listeClasses.pack(fill=Y)
+        listeClasses.pack(fill="y")
+        
+        scrollbar = Scrollbar(frame2, orient = "vertical")
+        scrollbar.config(command=listeClasses.yview)  
+        scrollbar.pack(side=RIGHT, fill="y")
+
+        
+        listeClasses.config(yscrollcommand=scrollbar.set)
+          
+        for x in range(30):
+            listeClasses.insert(END, str(x))
+
         
         frame3 = Frame(self.menuGauche)
         frame3.pack(fill=BOTH, expand=True, pady = 5)
@@ -92,9 +101,25 @@ class Vue():
         frame3 = Frame(self.menuDroite)
         frame3.pack(fill=BOTH, expand=True, pady = 5)
         
-        btnModification = Button(self.menuDroite, text = "Modification")
+        btnModification = Button(self.menuDroite, text = "Modification", command=self.creerMenuAjout)
         btnModification.pack()
         
+    def creerMenuAjout(self):
+        #enlever la premiere fenetre
+        self.menuDroite.pack_forget()
+        self.menuGauche.pack_forget()
+        
+        self.menuAjout = Frame(self.menu, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
+        self.menuAjout.pack()
+        frame1 = Frame(self.menuAjout)
+        frame1.pack(fill=X, pady=5)
+        
+        lblNomClasse = Label(frame1, text="Nom (classe)", width=25)
+        lblNomClasse.pack(side=LEFT)  
+        
+        entryNomClasse = Entry(frame1, text="erer", width=25)
+        entryNomClasse.pack(side=LEFT)
+        entryNomClasse.insert();
     
 class Modele():
     def __init__(self, parent):
