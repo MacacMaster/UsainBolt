@@ -6,45 +6,8 @@ import sqlite3
 from datetime import datetime
 from _overlapped import NULL
 
-class Vue():
-    def __init__(self, parent):
-        self.parent=parent
-        self.root=Tk() #Fenetre
-        self.root.title("Planification Globale")
-        self.hauteurTotale=600
-        self.largeurTotale=800
-        self.hauteurSub=500
-        self.largeurSub=800
-        self.fenetre = Frame(master=self.root, width=self.largeurTotale, height=self.hauteurTotale, bg="steelblue")
-        self.fenetre.pack()
-                   
+from PlanificationGlobaleVue  import *
 
-        self.barreTaches()
-        self.fenetreCreation()
-        
-    def barreTaches(self):
-        #menu deroulante
-
-        self.menubar = Menu(self.root)
-        self.menubar.add_command(label="Enregistrer", command= lambda: self.parent.modele.enregistrer(self.text))
-        self.menubar.add_command(label="Charger un fichier", command= lambda: self.parent.modele.explorateurFichiers(self.text))
-        self.menubar.add_separator()
-        self.menubar.add_command(label=self.parent.modele.getTime(), command= lambda: self.parent.modele.enregistrer(self.text))
-        self.root.config(menu=self.menubar)
-
-    def fenetreCreation(self):
-        self.fentrecreationplanif = Frame(self.fenetre,width=self.largeurSub, height=self.hauteurSub)
-        self.fentrecreationplanif.pack()
-        self.btnSauvegarder=Button()
-        
-        self.lbltemps=Label(self.fentrecreationplanif,font=("Arial",15,"bold"), bg="white")
-        self.lbltemps.configure(text=" " + str(self.parent.modele.getTime))
-        #self.crc= Label(master=self.fentrecreationplanif,text="")
-        pass
-    
-    
-    def fenetreConfirmation(self):
-        pass
     
     
   
@@ -67,9 +30,11 @@ class SQL():
 
 class Controleur():
     def __init__(self):
+        sys.argv[0] #nom du .py
+        #sys.argv[1]
         #Adresse du ServeurDB
-        self.dbip="127.0.0.1"
-        self.adresseServeur="http://"+self.dbip+":9998"
+        #self.dbip="127.0.0.1"
+        #self.adresseServeur="http://"+self.dbip+":9998"
         self.saasip=""
         self.organisation=""
         self.user=""
