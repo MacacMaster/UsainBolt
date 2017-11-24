@@ -52,7 +52,11 @@ class ControleurServeurBD():
             
         if (nomOrgaExiste and nomUsaExiste and mdpExiste):
             print("Réussite de l'authentification")
-            return pIdentifiantNom
+            nomOrga = (''+pIdentifiantNom+'',)
+            idOrgaBD = self.curseur.execute("SELECT id FROM Usagers WHERE Organisation_Id = ?", nomOrga)
+            idOrga = idOrgaBD.fetchone()
+            print("id de la personne connectée:", str(idOrga)[1:len(idOrga)-3])
+            return [pIdentifiantNom, str(idOrga)[1:len(idOrga)-3]]
         else:
             print("Echec de l'authentification")
             return 0
@@ -60,11 +64,19 @@ class ControleurServeurBD():
 
          
 
+    def rechercheProjetsDispo(self, id):
+        print("je cherche des projets")
+        t = (''+str(id)+'',)
+        tabProjet = []
+        for projet in self.curseur.execute('SELECT nom FROM Projets WHERE Organisation_Id =?', t):
+            print (str(projet)[2:len(projet)-4])
+            tabProjet.append(str(projet)[2:len(projet)-4])
+        return tabProjet
 
     
     
 print("Création du serveur pour la BD...")
-daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9998))
+daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9998),allow_none = 1)
 objetControleurServeurBD=ControleurServeurBD()
 daemon.register_instance(objetControleurServeurBD)
 print("Création du serveur BD terminé")

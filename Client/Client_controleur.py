@@ -42,7 +42,7 @@ class Controleur():
             #connection au Serveur
             ad="http://"+self.clientIP+":9999"
             print("Connection au serveur Saas en cours...")
-            self.serveur=ServerProxy(ad)
+            self.serveur=ServerProxy(ad,allow_none = 1)
             print("Connection au serveur Saas réussi")
             #
             reponseServeur = self.serveur.logInServeur(self.clientIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse)
@@ -52,7 +52,7 @@ class Controleur():
                 self.vue.logInClientFail()
             else:
                 self.log.writeLog("Login Successful")
-                self.vue.chargerCentral(reponseServeur[2],reponseServeur[3])
+                self.vue.chargerCentral(reponseServeur[1],reponseServeur[2],reponseServeur[3],reponseServeur[4])
         else:
             self.vue.logInClientFail()
             

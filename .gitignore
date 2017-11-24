@@ -1,6 +1,6 @@
 /*.project
 /*.pydevproject
-/.settings
+/.settings/*.*
 #ignores every folders in Client
 /Client/*/
 #ignores every db and .sqlite
@@ -8,3 +8,4 @@
 *.db
 #except
 !BDD.sqlite
+*.pyc

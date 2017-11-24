@@ -16,8 +16,9 @@ class Vue():
         self.cadreApplication.pack()
         self.centrerFenetre()
         
-        self.creerCadreLogIn(pClientIp)
+        self.creerCadreModules()
         self.creerCadreCentral()
+        self.creerCadreLogIn(pClientIp)
         self.changeCadre(self.cadreLogIn)
     
     def centrerFenetre(self):
@@ -68,15 +69,16 @@ class Vue():
     
     def creerCadreCentral(self):
         self.cadreCentral=Frame(self.cadreApplication)
-        
-        self.cadreModule = Frame(self.cadreCentral)
-        self.canevaModule=Canvas(self.cadreModule,width=400,height=600,bg="green")
-        self.canevaModule.pack()
-        self.listeModules=Listbox(self.cadreModule, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
-        btnconnecter=Button(self.cadreModule, text="Choisir un module",bg="pink",command=self.requeteModule)
-        self.canevaModule.create_window(200,100,window=self.listeModules)
-        self.canevaModule.create_window(200,450,window=btnconnecter,width=100,height=30)
-        self.cadreModule.pack(side=LEFT)
+        self.cadreProjet = Frame(self.cadreCentral)
+        self.canevaProjet=Canvas(self.cadreProjet,width=400,height=600,bg="green")
+        self.canevaProjet.pack()
+        self.listeProjets=Listbox(self.cadreProjet, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
+        btnconnecter=Button(self.cadreProjet, text="Choisir un Projet",bg="pink",command=self.chargerCadreModules)
+        btnCreerProjet=Button(self.cadreProjet, text="Creer un Projet",bg="pink",command=self.chargerCadreModules)
+        self.canevaProjet.create_window(200,100,window=self.listeProjets)
+        self.canevaProjet.create_window(200,450,window=btnconnecter,width=100,height=30)
+        self.canevaProjet.create_window(200,500,window=btnCreerProjet,width=100,height=30)
+        self.cadreProjet.pack(side=LEFT)
         
         #----------------------------
         self.cadreOutil = Frame(self.cadreCentral)
@@ -90,6 +92,25 @@ class Vue():
         
         self.cadreOutil.pack(side=LEFT)
         
+    def creerCadreModules(self):
+        self.cadreCentral2=Frame(self.cadreApplication)
+        self.cadreModules=Frame(self.cadreCentral2)
+        self.canevaModules=Canvas(self.cadreModules,width=800,height=600,bg="green")
+        self.canevaModules.pack()
+        self.listeModules=Listbox(self.cadreModules, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
+        btnconnecter=Button(self.cadreModules, text="Choisir un Module",bg="pink",command=self.requeteModule)
+        self.canevaModules.create_window(200,100,window=self.listeModules)
+        self.canevaModules.create_window(200,450,window=btnconnecter,width=100,height=30)
+        self.cadreModules.pack(side=LEFT)
+        
+    def chargerCadreModules(self):
+        self.changeCadre(self.cadreCentral2)
+         
+    def requeteProjet(self):
+        mod=self.listeProjets.selection_get()
+        if mod:
+            self.controleur.requeteProjet(mod)
+        
     def requeteModule(self):
         mod=self.listeModules.selection_get()
         if mod:
@@ -100,7 +121,10 @@ class Vue():
         if mod:
             self.controleur.requeteOutil(mod)
             
-    def chargerCentral(self,repmodules, repoutils):
+    def chargerCentral(self,repNomClient,repmodules, repoutils, repprojets):
+        #self.nom = repNomClient
+        for i in repprojets:
+            self.listeProjets.insert(END,i)
         for i in repmodules:
             self.listeModules.insert(END,i)
         for i in repoutils:
