@@ -2,43 +2,30 @@
 
 from tkinter import *
 from tkinter.filedialog import *
-import sqlite3
+
 from datetime import datetime
 from _overlapped import NULL
 
 from PlanificationGlobaleVue  import *
-
+from PlanificationGlobaleModele  import *
     
     
   
-class Modele():
-    def __init__(self, parent):
-        pass
-        
-    def importerDonnees(self,projectName):
-        pass
-
-    def getTime(self):
-        return (datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
-class SQL():
-    def __init__(self, adresseServeur):
-        self.adresseServeur=adresseServeur
-        
-        pass
-            
+  
 
 
 class Controleur():
     def __init__(self):
-        sys.argv[0] #nom du .py
-        #sys.argv[1]
-        #Adresse du ServeurDB
-        #self.dbip="127.0.0.1"
-        #self.adresseServeur="http://"+self.dbip+":9998"
-        self.saasip=""
-        self.organisation=""
-        self.user=""
-        self.clientip=""
+        for x in sys.argv:
+            print (x)
+        
+        self.saasIP=sys.argv[1]
+        self.utilisateur=sys.argv[2]
+        self.organisation=sys.argv[3]
+        self.idProjet=sys.argv[4]
+        self.clientIP=sys.argv[5]
+        self.adresseServeur="http://"+self.saasIP+":9998"
+
         self.modele=Modele(self)
         #self.serveur = self.connectionServeur()
         self.vue=Vue(self)
