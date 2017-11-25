@@ -124,7 +124,7 @@ class Vue():
         lblNomClasse = Label(frame1, text="Nom (classe)", width=25)
         lblNomClasse.pack(side=LEFT)  
         
-        self.entryNomClasse = Entry(frame1, text="erer", width=25)
+        self.entryNomClasse = Entry(frame1, text="", width=25)
         self.entryNomClasse.pack(side=LEFT)
         #entryNomClasse.insert(END,"nom de la classe");
         
@@ -214,6 +214,10 @@ class Vue():
         self.listeResponsabilites = []
         self.collaborateurs = []
         self.responsabilites = []  
+        self.entryNomClasse.delete(0, END)
+        self.entryNomClasse.insert(0, "")
+        self.entryProprietaire.delete(0, END)
+        self.entryProprietaire.insert(0, "")
         
         #enlever le menu qui existait
         self.menuAjout.pack_forget()
@@ -267,12 +271,15 @@ class Vue():
         else:
             self.entryProprietaire.configure({"background": "White"})        
         
+        #affichage d'un message d'erreur
         if (saisieNomClasse == "" or saisieProprietaire == ""):
             print(saisieNomClasse)
             print(saisieProprietaire)
 
             messagebox.showwarning("Attention", "Saisir les informations manquantes")
-            #mettre en jaune les éléments non entrés:
+        
+        else: 
+            self.canceler() #retour à au menu de base CRC  
             
 
 class Modele():
