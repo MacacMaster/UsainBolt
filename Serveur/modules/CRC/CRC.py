@@ -3,9 +3,12 @@
 from xmlrpc.client import ServerProxy
 from tkinter import *
 from tkinter.filedialog import *
+from tkinter import ttk
+from tkinter import messagebox
 import sqlite3
 import time
 from _overlapped import NULL
+
 
 class Vue():
     def __init__(self, parent):
@@ -132,8 +135,8 @@ class Vue():
         lblProprietaire = Label(frame2, text="Propriétaire", width=25)
         lblProprietaire.pack(side=LEFT)  
         
-        entryProprietaire = Entry(frame2, width=25)
-        entryProprietaire.pack(side=LEFT)
+        self.entryProprietaire = Entry(frame2, width=25)
+        self.entryProprietaire.pack(side=LEFT)
         #entryNomClasse.insert(END,"nom de la classe");
         
         #zone responsabilités et zone collaboration (labels)
@@ -196,11 +199,29 @@ class Vue():
         frame7 = Frame(self.menuAjout)
         frame7.pack(fill=X, pady=5)
         
-        boutonConfirmer = Button(frame7, text="Confirmer")
+        boutonConfirmer = Button(frame7, text="Confirmer", command = self.confirmer)
         boutonConfirmer.pack(side = LEFT)
         
         boutonSupprimer = Button(frame7, text="Supprimer", command = self.supprimer)
-        boutonSupprimer.pack(side = LEFT)        
+        boutonSupprimer.pack(side = LEFT)   
+        
+        boutonCanceler = Button(frame7, text="Canceler", command = self.canceler)
+        boutonCanceler.pack(side = LEFT)         
+        
+    def canceler(self):
+        #vider les listes, car aucune sauvegarde n'a été faite!
+        self.listeCollaboration = []
+        self.listeResponsabilites = []
+        self.collaborateurs = []
+        self.responsabilites = []  
+        
+        #enlever le menu qui existait
+        self.menuAjout.pack_forget()
+        
+        #retour en arriere<
+        self.menuGauche.pack(side=LEFT) 
+        self.menuDroite.pack(side=LEFT) 
+       
         
     def saisirCollaboration(self,event):
         saisie = self.entryCollaboration.get()
@@ -232,6 +253,28 @@ class Vue():
     def box_unfocused(self, event):
         self.focused_box = None
         
+    def confirmer(self):
+        saisieNomClasse = self.entryNomClasse.get()
+        saisieProprietaire = self.entryProprietaire.get()
+        
+        #mettre en jaune les infos manquantes
+        if saisieNomClasse == "":
+            self.entryNomClasse.configure({"background": "Yellow"})
+        else:
+            self.entryNomClasse.configure({"background": "White"})
+        if saisieProprietaire == "":
+            self.entryProprietaire.configure({"background": "Yellow"})
+        else:
+            self.entryProprietaire.configure({"background": "White"})        
+        
+        if (saisieNomClasse == "" or saisieProprietaire == ""):
+            print(saisieNomClasse)
+            print(saisieProprietaire)
+
+            messagebox.showwarning("Attention", "Saisir les informations manquantes")
+            #mettre en jaune les éléments non entrés:
+            
+
 class Modele():
     def __init__(self, parent, serveur):
         self.parent=parent
