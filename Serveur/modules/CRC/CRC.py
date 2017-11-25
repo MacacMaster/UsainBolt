@@ -19,6 +19,9 @@ class Vue():
         self.fenetre = Frame(master=self.root, width=self.largeurTotale, height=self.hauteurTotale, bg="steelblue")
         self.fenetre.pack()
         self.creerVueMenu()
+        self.collaborateurs=[]
+        self.responsabilites = []
+        self.focused_box = None
         
     
     def creerVueMenu(self):  
@@ -118,8 +121,8 @@ class Vue():
         lblNomClasse = Label(frame1, text="Nom (classe)", width=25)
         lblNomClasse.pack(side=LEFT)  
         
-        entryNomClasse = Entry(frame1, text="erer", width=25)
-        entryNomClasse.pack(side=LEFT)
+        self.entryNomClasse = Entry(frame1, text="erer", width=25)
+        self.entryNomClasse.pack(side=LEFT)
         #entryNomClasse.insert(END,"nom de la classe");
         
         #zone propriétaire
@@ -148,11 +151,13 @@ class Vue():
         frame4.pack(fill=X, pady=5)
         
         largeur = 55;
-        entryResponsabilite = Entry(frame4, text="", width=15)
-        entryResponsabilite.pack(side=LEFT, padx = largeur)
+        self.entryResponsabilite = Entry(frame4, text="", width=15)
+        self.entryResponsabilite.pack(side=LEFT, padx = largeur)
+        self.entryResponsabilite.bind('<Return>',self.saisirResponsabilite)
         
-        entryCollaboration = Entry(frame4, text="", width=15)
-        entryCollaboration.pack(side=LEFT, padx = largeur)
+        self.entryCollaboration = Entry(frame4, text="", width=15)
+        self.entryCollaboration.pack(side=LEFT, padx = largeur)
+        self.entryCollaboration.bind('<Return>',self.saisirCollaboration)
         
           
         #zone pour les listebox des responsabilités et des collaborations
@@ -165,10 +170,12 @@ class Vue():
         
         scrollbar = Scrollbar(frame6, orient = "vertical")
         
-        listeResponsabilites = Listbox(frame6, height=25,yscrollcommand=scrollbar)
-        listeResponsabilites.pack(side=LEFT, fill=BOTH, expand=1)
+        self.listeResponsabilites = Listbox(frame6, height=25,yscrollcommand=scrollbar)
+        self.listeResponsabilites.pack(side=LEFT, fill=BOTH, expand=1)
+        self.listeResponsabilites.bind("<FocusIn>", self.box_focused)
+        self.listeResponsabilites.bind("<FocusOut>", self.box_unfocused)
         
-        scrollbar.config(command=listeResponsabilites.yview)  
+        scrollbar.config(command=self.listeResponsabilites.yview)  
         scrollbar.pack(side=LEFT,fill="y", expand=1)
         
         #scrollbar droite
@@ -177,21 +184,54 @@ class Vue():
         
         scrollbar = Scrollbar(frame5, orient = "vertical")
         
-        listeCollaboration = Listbox(frame5, height=25,yscrollcommand=scrollbar)
-        listeCollaboration.pack(side=LEFT, fill=BOTH, expand=1)
+        self.listeCollaboration = Listbox(frame5, height=25,yscrollcommand=scrollbar)
+        self.listeCollaboration.pack(side=LEFT, fill=BOTH, expand=1)
+        self.listeCollaboration.bind("<FocusIn>", self.box_focused)
+        self.listeCollaboration.bind("<FocusOut>", self.box_unfocused)
         
-        scrollbar.config(command=listeCollaboration.yview)  
+        scrollbar.config(command=self.listeCollaboration.yview)  
         scrollbar.pack(side=LEFT,fill="y", expand=1)
-                
-
-        
+               
         #bouton en bas
         frame7 = Frame(self.menuAjout)
         frame7.pack(fill=X, pady=5)
         
         boutonConfirmer = Button(frame7, text="Confirmer")
-        boutonConfirmer.pack()
+        boutonConfirmer.pack(side = LEFT)
+        
+        boutonSupprimer = Button(frame7, text="Supprimer", command = self.supprimer)
+        boutonSupprimer.pack(side = LEFT)        
+        
+    def saisirCollaboration(self,event):
+        saisie = self.entryCollaboration.get()
+        self.collaborateurs.append(saisie)
+        self.listeCollaboration.insert(END,saisie)
+        #vider le Entry après avoir saisi quelque chose
+        self.entryCollaboration.delete(0,END)
+        print(self.entryCollaboration.get())
+        
+    def supprimer(self):
+        if self.focused_box == self.listeCollaboration:
+            index = self.listeCollaboration.curselection()[0]
+            self.listeCollaboration.delete(index)
+        elif self.focused_box == self.listeResponsabilites:
+            index = self.listeResponsabilites.curselection()[0]
+            self.listeResponsabilites.delete(index)
+            
+    def saisirResponsabilite(self,event):
+        saisie = self.entryResponsabilite.get()
+        self.responsabilites.append(saisie)
+        self.listeResponsabilites.insert(END,saisie)
+        #vider le Entry après avoir saisi quelque chose
+        self.entryResponsabilite.delete(0,END)
+        print(self.entryResponsabilite.get())
     
+    def box_focused(self, event):
+        self.focused_box = event.widget
+        
+    def box_unfocused(self, event):
+        self.focused_box = None
+        
 class Modele():
     def __init__(self, parent, serveur):
         self.parent=parent
