@@ -9,17 +9,10 @@ from xmlrpc.client import ServerProxy
 from subprocess import Popen
 import os
 
-######################################################
-# TODO:
-# Creer la fonction de redirection vers SQL - doit choisir le serveur approprié avec l'organisation envoye en param
-#
-#
-######################################################
-
 class Client(object):
     def __init__(self,nom, id):
-        self.nom=nom
-        self.id = id
+        self.nom=nom #nom usager
+        self.id = id #id orga
         self.cadreCourant=0
         self.cadreEnAttenteMax=0
         self.actionsEnAttentes={}
@@ -31,9 +24,12 @@ class ModeleService(object):
         #{Clé outils disponible:}
         self.projetsdisponibles={}
         self.modulesdisponibles={"Mandat":"Mandat",
-                                 "CasUsage":"CasUsage","PlanificationGlobale":"PlanificationGlobale"}# "CasUsage" : "CasUsage"}
+                                 "CasUsage":"CasUsage",
+                                 "Maquette":"Maquette",
+                                 "Modelisation":"Modelisation",
+                                 "PlanificationGlobale":"PlanificationGlobale"}
 
-        self.outilsdisponibles={"meta_sql": "meta_sql",}
+        self.outilsdisponibles={"meta_sql": "meta_sql"}
         self.clients={}
 
     def creerclient(self,nom, id):
@@ -54,35 +50,42 @@ class ModeleService(object):
                 list(self.outilsdisponibles.keys()),
                 list(self.projetsdisponibles.keys())
                 ]
+        
 class ControleurServeur():
     def __init__(self):
         self.modele= ModeleService(self)
+        self.ipServeurBd = None
         self.serveurBD=None
         
     def logInServeur(self, pUsagerIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
         #Connection au serveurDB
-        ad="http://"+pUsagerIP+":9998"
+        self.ipServeurBd="http://"+pUsagerIP+":9998"
         print("Connection au serveur BD...")
-        self.serveurBD=ServerProxy(ad)
+        self.serveurBD=ServerProxy(self.ipServeurBd,allow_none = 1)
         print("Connection serveur BD réussi")
         
         #variables id
         identifiantNomUsager = pIdentifiantNomUsager
         identifiantNomOrga = pIdentifiantNomOrga
         identifiantMotDePasse = pIdentifiantMotDePasse
-        
+        #rep = self.serveurBD.selDonnees("Projets", "Nom")
         clientTempo = self.chercherClientBD(identifiantNomUsager, identifiantNomOrga, identifiantMotDePasse)
         if (clientTempo == 0):
             return 0
         else:
-            print("Recherche du client terminé. Il s'agit de", clientTempo[0], "qui a pour ID :", clientTempo[1])
+            print("Recherche du client terminé. Il s'agit de", clientTempo[0], "qui appartient a l'organisation numero ", clientTempo[1])
             client = self.modele.creerclient(clientTempo[0], clientTempo[1])
-            return client
+            return [client, clientTempo[1]]
 
     def rechercheProjetsDispo(self, id):
         tabProjet = self.serveurBD.rechercheProjetsDispo(id)
         return tabProjet
     
+    def chargerProjet(self, nomprojet, idorga):
+        idProjet = self.serveurBD.chargerProjet(nomprojet, idorga)
+        return idProjet
+        
+        
     def finDuProgramme(self):
         daemon.shutdown()
         
@@ -144,7 +147,7 @@ class ControleurServeur():
         return True 
     
 print("Création du serveur...")
-daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9999))
+daemon = SimpleXMLRPCServer((socket.gethostbyname(socket.gethostname()),9999),allow_none = 1)
 objetControleurServeur=ControleurServeur()
 daemon.register_instance(objetControleurServeur)
 print("Création du serveur terminé")

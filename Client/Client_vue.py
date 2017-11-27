@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from tkinter import *
 from tkinter import tix
 from tkinter import ttk
@@ -9,6 +11,8 @@ class Vue():
         self.largeur = 800
         self.hauteur = 600
         self.cadreActuel = None
+        self.labIDOrga = None
+        self.labNomOrga = None
         self.root=tix.Tk()
         self.root.title("SPRINTMASTER")
         self.root.protocol("WM_DELETE_WINDOW", self.controleur.fermerApplication)
@@ -17,7 +21,6 @@ class Vue():
         self.centrerFenetre()
         
         self.creerCadreModules()
-        self.creerCadreCentral()
         self.creerCadreLogIn(pClientIp)
         self.changeCadre(self.cadreLogIn)
     
@@ -65,7 +68,11 @@ class Vue():
         self.controleur.logInClient(identifiantNomUsager, identifiantNomOrga,identifiantMotDePasse)
     
     def logInClientFail(self):
-        messagebox.showwarning('Connexion refusée', 'Nom de compte ou mot de passe incorrect')
+        messagebox.showwarning('Connexion refus�e', 'Nom de compte ou mot de passe incorrect.')
+        
+    
+    def chooseProjectFail(self):
+        messagebox.showwarning('Projet inconnu', 'Merci de s�l�ctionner un projet existant.')
     
     def creerCadreCentral(self):
         self.cadreCentral=Frame(self.cadreApplication)
@@ -73,9 +80,12 @@ class Vue():
         self.canevaProjet=Canvas(self.cadreProjet,width=400,height=600,bg="green")
         self.canevaProjet.pack()
         self.listeProjets=Listbox(self.cadreProjet, bg="lightblue",borderwidth=0,relief=FLAT,width=40,height=6)
-        btnconnecter=Button(self.cadreProjet, text="Choisir un Projet",bg="pink",command=self.chargerCadreModules)
-        btnCreerProjet=Button(self.cadreProjet, text="Creer un Projet",bg="pink",command=self.chargerCadreModules)
+        btnconnecter=Button(self.cadreProjet, text="Choisir un Projet",bg="pink",command=self.chargerProjet)
+        btnCreerProjet=Button(self.cadreProjet, text="Creer un Projet",bg="pink",command=self.chargerProjet)
         self.canevaProjet.create_window(200,100,window=self.listeProjets)
+        
+        self.canevaProjet.create_window(100,20,window=self.labNomOrga,width=100,height=15)
+        self.canevaProjet.create_window(250,20,window=self.labIDOrga,width=100,height=15)
         self.canevaProjet.create_window(200,450,window=btnconnecter,width=100,height=30)
         self.canevaProjet.create_window(200,500,window=btnCreerProjet,width=100,height=30)
         self.cadreProjet.pack(side=LEFT)
@@ -103,8 +113,13 @@ class Vue():
         self.canevaModules.create_window(200,450,window=btnconnecter,width=100,height=30)
         self.cadreModules.pack(side=LEFT)
         
-    def chargerCadreModules(self):
-        self.changeCadre(self.cadreCentral2)
+    def chargerProjet(self):
+        if self.listeProjets.curselection():
+            nomprojet=self.listeProjets.selection_get()
+            self.controleur.chargerProjet(nomprojet, self.controleur.idOrga);
+            self.changeCadre(self.cadreCentral2)
+        else:
+            self.chooseProjectFail()
          
     def requeteProjet(self):
         mod=self.listeProjets.selection_get()
@@ -122,7 +137,11 @@ class Vue():
             self.controleur.requeteOutil(mod)
             
     def chargerCentral(self,repNomClient,repmodules, repoutils, repprojets):
-        #self.nom = repNomClient
+        
+        self.labNomOrga=Label(text="Nom usager: "+self.controleur.utilisateur,borderwidth=0,relief=RIDGE,fg="black", font=("Helvetica", 10))
+        self.labIDOrga=Label(text="Id organisation: "+self.controleur.idOrga,borderwidth=0,relief=RIDGE,fg="black", font=("Helvetica", 10))
+        self.creerCadreCentral()
+        
         for i in repprojets:
             self.listeProjets.insert(END,i)
         for i in repmodules:

@@ -27,14 +27,20 @@ class Controleur():
         self.serveur=None
         self.log=Log(self,self.clientIP)#,self.serveur)
         #string utilisateur et organisation
-        self.utilisateur=None
+        self.utilisateur="None"
         self.organisation=None
+        self.idOrga=None
         #id du projet selectionne
-        self.idProjet="None"
-        
+        self.idProjet=None
         self.vue=Vue(self,self.clientIP)
         self.vue.root.mainloop()
         
+    
+    def chargerProjet(self, nomprojet, idorga):
+        idProjet = self.serveur.chargerProjet(nomprojet, idorga)
+        self.idProjet = idProjet
+        print("id du projet coté client controleur", self.idProjet)
+        return idProjet
     
     #trouve l'IP du client
     def chercherIP(self):
@@ -44,7 +50,6 @@ class Controleur():
 
     def fermerApplication(self):
         self.vue.root.destroy()
-    
         
     def logInClient(self, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse):
         #Vérification des informations avant l'envoi au serveur
@@ -52,7 +57,7 @@ class Controleur():
             #connection au Serveur
             ad="http://"+self.saasIP+":9999"
             print("Connection au serveur Saas en cours...")
-            self.serveur=ServerProxy(ad)
+            self.serveur=ServerProxy(ad,allow_none = 1)
             print("Connection au serveur Saas réussi")
             #
             reponseServeur = self.serveur.logInServeur(self.clientIP, pIdentifiantNomUsager, pIdentifiantNomOrga, pIdentifiantMotDePasse)
@@ -64,7 +69,8 @@ class Controleur():
                 self.log.writeLog("Login Successful")
                 self.utilisateur=pIdentifiantNomUsager
                 self.organisation=pIdentifiantNomOrga
-                self.vue.chargerCentral(reponseServeur[1],reponseServeur[2],reponseServeur[3],reponseServeur[4])
+                self.idOrga = reponseServeur[1]
+                self.vue.chargerCentral(reponseServeur[0][1],reponseServeur[0][2],reponseServeur[0][3],reponseServeur[0][4])
         else:
             self.vue.logInClientFail()
             
