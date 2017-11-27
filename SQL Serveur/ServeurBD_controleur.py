@@ -34,8 +34,7 @@ class ControleurServeurBD():
         idProjet = self.curseur.execute("SELECT id FROM Projets WHERE id_Organisation = ? and nom = ? ", (idOrgaBD, nomProjetBD)).fetchone()
         print("L'id du projet séléctionné est", str(idProjet)[1:len(idProjet)-3])
         return str(idProjet)[1:len(idProjet)-3]
-    
-    def chercherClientBD(self, pIdentifiantNom, pIdentifiantOrga, pIdentifiantMotDePasse):
+        def chercherClientBD(self, pIdentifiantNom, pIdentifiantOrga, pIdentifiantMotDePasse):
         nomOrgaExiste = False
         nomUsaExiste = False
         mdpExiste = False
@@ -86,6 +85,8 @@ class ControleurServeurBD():
             print("Echec de l'authentification")
             return 0
         
+
+         
 
     def rechercheProjetsDispo(self, id):
         print("je cherche des projets")

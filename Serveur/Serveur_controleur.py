@@ -61,15 +61,13 @@ class ControleurServeur():
         #Connection au serveurDB
         self.ipServeurBd="http://"+pUsagerIP+":9998"
         print("Connection au serveur BD...")
-        self.serveurBD=ServerProxy(self.ipServeurBd,allow_none = 1)
-        print("Connection serveur BD réussi")
+		self.serveurBD=ServerProxy(self.ipServeurBd,allow_none = 1) #self.serveurBD=ServerProxy(ad,allow_none = 1)        print("Connection serveur BD réussi")
         
         #variables id
         identifiantNomUsager = pIdentifiantNomUsager
         identifiantNomOrga = pIdentifiantNomOrga
         identifiantMotDePasse = pIdentifiantMotDePasse
-        #rep = self.serveurBD.selDonnees("Projets", "Nom")
-        clientTempo = self.chercherClientBD(identifiantNomUsager, identifiantNomOrga, identifiantMotDePasse)
+		#rep = self.serveurBD.selDonnees("Projets", "Nom")        clientTempo = self.chercherClientBD(identifiantNomUsager, identifiantNomOrga, identifiantMotDePasse)
         if (clientTempo == 0):
             return 0
         else:
