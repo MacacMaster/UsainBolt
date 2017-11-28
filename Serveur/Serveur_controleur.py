@@ -27,6 +27,7 @@ class ModeleService(object):
                                  "CasUsage":"CasUsage",
                                  "Maquette":"Maquette",
                                  "Modelisation":"Modelisation",
+                                 "CRC":"CRC",
                                  "PlanificationGlobale":"PlanificationGlobale"}
 
         self.outilsdisponibles={"meta_sql": "meta_sql"}
