@@ -21,6 +21,9 @@ class Vue():
         self.largeurMandat=200
         self.fenetre = Frame(master=self.root, width=self.largeurTotale, height=self.hauteurTotale, bg="steelblue")
         self.fenetre.pack()
+        self.classes = []
+        #self.classes = [("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio")]
+
         self.creerVueMenu()
         self.collaborateurs=[]
         self.responsabilites = []
@@ -31,8 +34,26 @@ class Vue():
         self.menu = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
         self.menu.pack(side=LEFT)
         #self.menu.pack_propagate(0)
+        #self.classes = self.parent.modele.nomsDesClasses()
+        #test
+        self.classes = [("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio")]
+
         self.creerMenuGauche()
         self.creerMenuDroite()
+        #chercher la liste des classes
+
+    def choisirClasse(self,event):
+        
+        #vider la liste
+        self.listeResponsabilites.delete(0, END) #effacer la liste
+        self.listeCollaboration.delete(0, END) #effacer la liste
+        index = self.listeClasses.curselection()[0]
+        id = self.classes[index][0]
+        print(id)
+        for classes in self.classes:
+            self.listeResponsabilites.insert(END,classes[2])
+            self.listeCollaboration.insert(END,classes[1])
+       
         
     def creerMenuGauche(self):
         self.menuGauche = Frame(self.menu, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
@@ -50,14 +71,19 @@ class Vue():
         frame2.pack()
         
         #scrollbar   
-        listeClasses = Listbox(frame2, height=25)
-        listeClasses.pack(side=LEFT,fill="y")
+        self.listeClasses = Listbox(frame2, height=25)
+        self.listeClasses.pack(side=LEFT,fill="y")
+        self.listeClasses.bind('<<ListboxSelect>>',self.choisirClasse)
         
         scrollbar = Scrollbar(frame2, orient = "vertical")
-        scrollbar.config(command=listeClasses.yview)  
+        scrollbar.config(command=self.listeClasses.yview)  
         scrollbar.pack(side=LEFT,fill="y")
    
-        listeClasses.config(yscrollcommand=scrollbar.set)
+        self.listeClasses.config(yscrollcommand=scrollbar.set)
+        
+        #remplir la liste de classes
+        for classe in self.classes:
+            self.listeClasses.insert(END,classe[2]) #insérer le nom de la classe
           
         #for x in range(30):
         #    listeClasses.insert(END, str(x))
@@ -94,14 +120,14 @@ class Vue():
         lblResponsabilites = Label(frame2, text = "Responsabilités")
         lblResponsabilites.pack()
         
-        listeResponsabilites = Listbox(frame2)
-        listeResponsabilites.pack()
+        self.listeResponsabilites = Listbox(frame2)
+        self.listeResponsabilites.pack()
               
         lblCollaboration = Label(frame2, text = "Collaboration")
         lblCollaboration.pack()
         
-        listeCollaboration = Listbox(frame2)
-        listeCollaboration.pack()
+        self.listeCollaboration = Listbox(frame2)
+        self.listeCollaboration.pack()
         
         frame3 = Frame(self.menuDroite)
         frame3.pack(fill=BOTH, expand=True, pady = 5)
@@ -309,18 +335,20 @@ class Modele():
         pass
     
     def nomsDesClasses(self):
-        reponse = self.serveur.sel("CRCClasse", "nom")
-        
-        
-        
-        list = self.serveur.sel()
-        return list
-        
+        champs = ["id_classes", "nom", "id_projet"]
+        selected = self.serveur.sel("CRCClasse", champs)
+        #ajouter les classes correspondant au id projet à une liste
+        classes = []
+        for element in select:
+            if element[2] == self.parent.idProjet:
+                classes.append(element)    
+        return classes    
 
 class Controleur():
     def __init__(self):
         #informations du système quand le programme est lancé
         #self.idClient = 999;
+        
         self.ip = 999;
         self.idProjet = 999;
           
@@ -328,10 +356,17 @@ class Controleur():
         ad="http://"+str(self.ip)+":9999"
         self.serveur = ServerProxy(ad)
         
-        #self.serveur = self.connectionServeur()
-        self.vue=Vue(self)
-        self.vue.root.mainloop()
+        #MVC
         self.modele=Modele(self, self.serveur)
+        self.vue=Vue(self)
+        
+
+        
+        #self.serveur = self.connectionServeur()
+        
+        
+        self.vue.root.mainloop()
+      
     
     def connectionServeur(self):
         ad="http://"+pUsagerIP+":9998"
