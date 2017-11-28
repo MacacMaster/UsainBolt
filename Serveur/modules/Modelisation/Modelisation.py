@@ -14,6 +14,7 @@ class Controleur():
 class Modele():
     def __init__(self, pControleur):
         self.controleur = pControleur
+        print("modele")
     
 class Vue():
     def __init__(self, pControleur):
@@ -85,21 +86,42 @@ class Vue():
     def menuAjouterChamps(self):
         print("gasgbsaoidbgsd")
         self.canevaAffichageChamps.forget()
-        self.canevaAjouterChamps = Canvas(self.fenetre, width = self.largeur , height=self.hauteur, bg="steelblue")
+        self.canevaAjouterChamps = Canvas(self.fenetre, width = self.largeur*(2/3) , height=self.hauteur, bg="steelblue")
         self.canevaAjouterChamps.pack()
         
         self.lblNom=Label(text="Nom : ",bg="lightblue")
-        self.canevaAjouterChamps.create_window(100,60,window=self.lblNom)
+        self.canevaAjouterChamps.create_window(100,85,window=self.lblNom)
         
         self.lblType=Label(text="Type : ",bg="lightblue")
-        self.canevaAjouterChamps.create_window(100,110,window=self.lblType)
+        self.canevaAjouterChamps.create_window(100,150,window=self.lblType)
         
         self.entryNomChamps=Entry(bg="white")
-        self.canevaAjouterChamps.create_window(300,60,window=self.entryNomChamps,width=150,height=20)
+        self.canevaAjouterChamps.create_window(300,85,window=self.entryNomChamps,width=300,height=20)
         
+        self.entryType=Entry(bg="white")
+        self.canevaAjouterChamps.create_window(300,150,window=self.entryType,width=300,height=20)
         
+        self.checkButtonPK=Checkbutton(text="Clé primaire",bg="steelblue")
+        self.canevaAjouterChamps.create_window(125,215,window=self.checkButtonPK,width=100,height=20)
         
+        self.checkButtonFK=Checkbutton(text="Clé secondaire",bg="steelblue")
+        self.canevaAjouterChamps.create_window(130,280,window=self.checkButtonFK,width=100,height=20)
         
+        self.lblTableFK=Label(text="Table : ",bg="lightblue")
+        self.canevaAjouterChamps.create_window(250,280,window=self.lblTableFK)
+        
+        self.lblChampsFK=Label(text="Champs : ",bg="lightblue")
+        self.canevaAjouterChamps.create_window(260,345,window=self.lblChampsFK)
+        
+        self.btnAjouterChamps=Button(self.canevaAjouterChamps,text="Ajouter un champs",width=20,command=self.ajouterChamps)
+        self.canevaAjouterChamps.create_window(260,500,window=self.btnAjouterChamps,width=150,height=20)
+        
+
+        
+     
+    def ajouterChamps(self):
+        pass
+       
     def annulerNouvelleTable(self):
        
         self.canevaNouvelleTable.forget()

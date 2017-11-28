@@ -6,7 +6,7 @@ class Controleur():
     def __init__(self):
         self.serveur=ServeurBDcas(self)
         self.vue = Vue(self)
-        self.modele= Modele(self)
+        self.modele = Modele(self)
         self.unReprend=False
         self.vue.root.mainloop()
         print("controleur")
@@ -58,6 +58,7 @@ class Controleur():
 class Modele():
     def __init__(self, pControleur):
         self.controleur = pControleur
+        print("modele")
     
 class Vue():
     def __init__(self, pControleur):
