@@ -1,6 +1,6 @@
 from tkinter import *
 
-class Controleur():
+'''class Controleur():
     def __init__(self):
         self.vue = Vue(self)
         self.unReprend=False
@@ -20,20 +20,16 @@ class Vue():
         self.dejaOuvert=False
         self.indiceCasModifier=0
         self.menuInitial()
-<<<<<<< HEAD
         self.x=0
         self.y=0
         self.x2=0
         self.y2=0
         self.cercle=False;
         self.rect=False;
-=======
->>>>>>> 02030141a51a9eca448d5d68a0c293bb06a4f102
       
 
     
     def menuInitial(self):
-<<<<<<< HEAD
         self.caneva = Canvas(self.fenetre, width = self.largeur-200, height=self.hauteur, bg="white")
         self.caneva.pack(side=LEFT)
         self.cadreBtn = Canvas(self.fenetre, width = 200, height=self.hauteur, bg="white")
@@ -101,42 +97,59 @@ class Vue():
         
         self.caneva.create_rectangle(self.x,self.y,self.x2,self.y2,tags="Forme")
         self.caneva.delete("Forme")
-      
- 
-=======
-        self.caneva = Canvas(self.fenetre, width = self.largeur, height=self.hauteur, bg="white")
-        self.caneva.pack()
         
-        self.btnRectangle=Button(self.caneva,text="Rectangle",width=30)
-        self.caneva.create_window(700,100,window=self.btnRectangle,width=150,height=30)
-    
-        self.btnCercle=Button(self.caneva,text="Cercle",width=30)
-        self.caneva.create_window(700,550,window=self.btnCercle,width=150,height=30)
-        
-        self.bntTexte=Button(self.caneva,text="Texte",width=30)#
-        self.caneva.create_window(700,200,window=self.bntTexte,width=150,height=30)
-        
-        self.bntFleche=Button(self.caneva,text="Fleche",width=30)
-        self.caneva.create_window(700,300,window=self.bntFleche,width=150,height=30)
-
-      
-        
-        self.btnRectangle=Button(self.caneva,text="Commit",width=30)
-        self.caneva.create_window(700,500,window=self.btnRectangle,width=150,height=30)
-    
-        self.btnCercle=Button(self.caneva,text="Supprimer",width=30)
-        self.caneva.create_window(700,550,window=self.btnCercle,width=150,height=30)
         
     def callback(event):
-        print ("clicked at", event.x, event.y)
+        print ("clicked at", event.x, event.y)'''
+        
+        
+class Controleur():
+    def __init__(self):
+        self.modele = Modele(self)
+        self.vue = Vue(self)
+        self.vue.root.mainloop()
 
-            
-           
-         
-            
+class Vue():
+    def __init__(self, pControleur):
+        self.controleur = pControleur
+        self.largeur = 800
+        self.hauteur = 600
+        self.root = Tk()
+        self.cadreMaquette = Frame(self.root, width = self.largeur, height = self.hauteur)
+        self.cadreMaquette.pack()
+        self.canevas = Canvas(self.cadreMaquette, width = self.largeur, height = self.hauteur)
+        self.canevas.pack(side = LEFT)
+        self.cadreOutil= Frame(self.cadreMaquette, width = self.largeur - 600, height = self.hauteur, bg = "grey")
+        self.cadreOutil.pack(side = LEFT)
 
->>>>>>> 02030141a51a9eca448d5d68a0c293bb06a4f102
-               
+        
+    def afficherCaneva(self):
+        self.canevas.delete(ALL)
+        for i in self.controleur.modele.formes:
+            if (self.controleur.modele.formes.nom == "Rectangle"):
+                self.canevas.create_rectangle(i.x1,i.y1,i.x+i.taille,i.y+i.taille, fill="black")
+            if (self.controleur.modele.formes.nom == "Cercle"):
+                self.canevas.create_oval()(i.x1,i.y1,i.x+i.taille,i.y+i.taille, fill="black")
+            if (self.controleur.modele.formes.nom == "Fleche"):
+                self.canevas.create_line()()(i.x1,i.y1,i.x+i.taille,i.y+i.taille, fill="black")
+            if (self.controleur.modele.formes.nom == "Texte"):
+                self.canevas.create_text()()()(i.x1,i.y1,i.x+i.taille,i.y+i.taille, fill="black")
+                
+class Modele():
+    def __init__(self, pControleur):
+        self.controleur = pControleur
+        self.formes = [ ]
+        
 
+class Formes():
+    def __init__(self, pModele, pNom):
+        self.modele=pModele
+        self.nom = pNom
+        self.x1
+        self.y1
+        self.x2
+        self.y2
+        self.text
+                        
 if __name__ == '__main__':
     c = Controleur()

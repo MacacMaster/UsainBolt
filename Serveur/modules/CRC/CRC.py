@@ -1,10 +1,14 @@
 #-*- coding: utf-8 -*-
 
+from xmlrpc.client import ServerProxy
 from tkinter import *
 from tkinter.filedialog import *
+from tkinter import ttk
+from tkinter import messagebox
 import sqlite3
 import time
 from _overlapped import NULL
+
 
 class Vue():
     def __init__(self, parent):
@@ -17,15 +21,43 @@ class Vue():
         self.largeurMandat=200
         self.fenetre = Frame(master=self.root, width=self.largeurTotale, height=self.hauteurTotale, bg="steelblue")
         self.fenetre.pack()
+        self.classes = []
+        #self.classes = [("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio")]
+
         self.creerVueMenu()
+        self.collaborateurs=[]
+        self.responsabilites = []
+        self.focused_box = None
         
     
     def creerVueMenu(self):  
         self.menu = Frame(self.fenetre, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
         self.menu.pack(side=LEFT)
         #self.menu.pack_propagate(0)
+        #self.classes = self.parent.modele.nomsDesClasses()
+        #test
+        self.classes = [("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio"),("id classe", "id projet", "nom", "proprio")]
+
         self.creerMenuGauche()
         self.creerMenuDroite()
+        #chercher la liste des classes
+
+    def choisirClasse(self,event):
+        
+        #vider la liste
+        self.listeResponsabilites.delete(0, END) #effacer la liste
+        self.listeCollaboration.delete(0, END) #effacer la liste
+        index = self.listeClasses.curselection()[0]
+        id = self.classes[index][0]
+        print(id)
+        for classes in self.classes:
+            self.listeResponsabilites.insert(END,classes[2])
+            self.listeCollaboration.insert(END,classes[1])
+            
+        #informations sur le propriétaire
+        self.lblNomClasse.config(text = self.classes[index][2])
+        self.lblProprietaire.config(text  = self.classes[index][3])
+       
         
     def creerMenuGauche(self):
         self.menuGauche = Frame(self.menu, width = self.largeurMandat, height=self.hauteurMandat, bg="steelblue", relief=RAISED, padx=10, pady=10)
@@ -43,14 +75,19 @@ class Vue():
         frame2.pack()
         
         #scrollbar   
-        listeClasses = Listbox(frame2, height=25)
-        listeClasses.pack(side=LEFT,fill="y")
+        self.listeClasses = Listbox(frame2, height=25)
+        self.listeClasses.pack(side=LEFT,fill="y")
+        self.listeClasses.bind('<<ListboxSelect>>',self.choisirClasse)
         
         scrollbar = Scrollbar(frame2, orient = "vertical")
-        scrollbar.config(command=listeClasses.yview)  
+        scrollbar.config(command=self.listeClasses.yview)  
         scrollbar.pack(side=LEFT,fill="y")
    
-        listeClasses.config(yscrollcommand=scrollbar.set)
+        self.listeClasses.config(yscrollcommand=scrollbar.set)
+        
+        #remplir la liste de classes
+        for classe in self.classes:
+            self.listeClasses.insert(END,classe[2]) #insérer le nom de la classe
           
         #for x in range(30):
         #    listeClasses.insert(END, str(x))
@@ -78,23 +115,23 @@ class Vue():
         frame2 = Frame(self.menuDroite)
         frame2.pack(fill=X)
         
-        lblNomClasse = Label(frame2, text = "nom de la classe")
-        lblNomClasse.pack()
+        self.lblNomClasse = Label(frame2, text = "nom de la classe")
+        self.lblNomClasse.pack()
         
-        lblProprietaire = Label(frame2, text = "propriétaire de la classe")
-        lblProprietaire.pack()
+        self.lblProprietaire = Label(frame2, text = "propriétaire de la classe")
+        self.lblProprietaire.pack()
         
         lblResponsabilites = Label(frame2, text = "Responsabilités")
         lblResponsabilites.pack()
         
-        listeResponsabilites = Listbox(frame2)
-        listeResponsabilites.pack()
+        self.listeResponsabilites = Listbox(frame2)
+        self.listeResponsabilites.pack()
               
         lblCollaboration = Label(frame2, text = "Collaboration")
         lblCollaboration.pack()
         
-        listeCollaboration = Listbox(frame2)
-        listeCollaboration.pack()
+        self.listeCollaboration = Listbox(frame2)
+        self.listeCollaboration.pack()
         
         frame3 = Frame(self.menuDroite)
         frame3.pack(fill=BOTH, expand=True, pady = 5)
@@ -117,8 +154,8 @@ class Vue():
         lblNomClasse = Label(frame1, text="Nom (classe)", width=25)
         lblNomClasse.pack(side=LEFT)  
         
-        entryNomClasse = Entry(frame1, text="erer", width=25)
-        entryNomClasse.pack(side=LEFT)
+        self.entryNomClasse = Entry(frame1, text="", width=25)
+        self.entryNomClasse.pack(side=LEFT)
         #entryNomClasse.insert(END,"nom de la classe");
         
         #zone propriétaire
@@ -128,8 +165,8 @@ class Vue():
         lblProprietaire = Label(frame2, text="Propriétaire", width=25)
         lblProprietaire.pack(side=LEFT)  
         
-        entryProprietaire = Entry(frame2, width=25)
-        entryProprietaire.pack(side=LEFT)
+        self.entryProprietaire = Entry(frame2, width=25)
+        self.entryProprietaire.pack(side=LEFT)
         #entryNomClasse.insert(END,"nom de la classe");
         
         #zone responsabilités et zone collaboration (labels)
@@ -147,11 +184,13 @@ class Vue():
         frame4.pack(fill=X, pady=5)
         
         largeur = 55;
-        entryResponsabilite = Entry(frame4, text="", width=15)
-        entryResponsabilite.pack(side=LEFT, padx = largeur)
+        self.entryResponsabilite = Entry(frame4, text="", width=15)
+        self.entryResponsabilite.pack(side=LEFT, padx = largeur)
+        self.entryResponsabilite.bind('<Return>',self.saisirResponsabilite)
         
-        entryCollaboration = Entry(frame4, text="", width=15)
-        entryCollaboration.pack(side=LEFT, padx = largeur)
+        self.entryCollaboration = Entry(frame4, text="", width=15)
+        self.entryCollaboration.pack(side=LEFT, padx = largeur)
+        self.entryCollaboration.bind('<Return>',self.saisirCollaboration)
         
           
         #zone pour les listebox des responsabilités et des collaborations
@@ -164,10 +203,12 @@ class Vue():
         
         scrollbar = Scrollbar(frame6, orient = "vertical")
         
-        listeResponsabilites = Listbox(frame6, height=25,yscrollcommand=scrollbar)
-        listeResponsabilites.pack(side=LEFT, fill=BOTH, expand=1)
+        self.listeResponsabilites = Listbox(frame6, height=25,yscrollcommand=scrollbar)
+        self.listeResponsabilites.pack(side=LEFT, fill=BOTH, expand=1)
+        self.listeResponsabilites.bind("<FocusIn>", self.box_focused)
+        self.listeResponsabilites.bind("<FocusOut>", self.box_unfocused)
         
-        scrollbar.config(command=listeResponsabilites.yview)  
+        scrollbar.config(command=self.listeResponsabilites.yview)  
         scrollbar.pack(side=LEFT,fill="y", expand=1)
         
         #scrollbar droite
@@ -176,24 +217,105 @@ class Vue():
         
         scrollbar = Scrollbar(frame5, orient = "vertical")
         
-        listeCollaboration = Listbox(frame5, height=25,yscrollcommand=scrollbar)
-        listeCollaboration.pack(side=LEFT, fill=BOTH, expand=1)
+        self.listeCollaboration = Listbox(frame5, height=25,yscrollcommand=scrollbar)
+        self.listeCollaboration.pack(side=LEFT, fill=BOTH, expand=1)
+        self.listeCollaboration.bind("<FocusIn>", self.box_focused)
+        self.listeCollaboration.bind("<FocusOut>", self.box_unfocused)
         
-        scrollbar.config(command=listeCollaboration.yview)  
+        scrollbar.config(command=self.listeCollaboration.yview)  
         scrollbar.pack(side=LEFT,fill="y", expand=1)
-                
-
-        
+               
         #bouton en bas
         frame7 = Frame(self.menuAjout)
         frame7.pack(fill=X, pady=5)
         
-        boutonConfirmer = Button(frame7, text="Confirmer")
-        boutonConfirmer.pack()
+        boutonConfirmer = Button(frame7, text="Confirmer", command = self.confirmer)
+        boutonConfirmer.pack(side = LEFT)
+        
+        boutonSupprimer = Button(frame7, text="Supprimer", command = self.supprimer)
+        boutonSupprimer.pack(side = LEFT)   
+        
+        boutonCanceler = Button(frame7, text="Canceler", command = self.canceler)
+        boutonCanceler.pack(side = LEFT)         
+        
+    def canceler(self):
+        #vider les listes, car aucune sauvegarde n'a été faite!
+        self.listeCollaboration = []
+        self.listeResponsabilites = []
+        self.collaborateurs = []
+        self.responsabilites = []  
+        self.entryNomClasse.delete(0, END)
+        self.entryNomClasse.insert(0, "")
+        self.entryProprietaire.delete(0, END)
+        self.entryProprietaire.insert(0, "")
+        
+        #enlever le menu qui existait
+        self.menuAjout.pack_forget()
+        
+        #retour en arriere<
+        self.menuGauche.pack(side=LEFT) 
+        self.menuDroite.pack(side=LEFT) 
+       
+        
+    def saisirCollaboration(self,event):
+        saisie = self.entryCollaboration.get()
+        self.collaborateurs.append(saisie)
+        self.listeCollaboration.insert(END,saisie)
+        #vider le Entry après avoir saisi quelque chose
+        self.entryCollaboration.delete(0,END)
+        print(self.entryCollaboration.get())
+        
+    def supprimer(self):
+        if self.focused_box == self.listeCollaboration:
+            index = self.listeCollaboration.curselection()[0]
+            self.listeCollaboration.delete(index)
+        elif self.focused_box == self.listeResponsabilites:
+            index = self.listeResponsabilites.curselection()[0]
+            self.listeResponsabilites.delete(index)
+            
+    def saisirResponsabilite(self,event):
+        saisie = self.entryResponsabilite.get()
+        self.responsabilites.append(saisie)
+        self.listeResponsabilites.insert(END,saisie)
+        #vider le Entry après avoir saisi quelque chose
+        self.entryResponsabilite.delete(0,END)
+        print(self.entryResponsabilite.get())
     
+    def box_focused(self, event):
+        self.focused_box = event.widget
+        
+    def box_unfocused(self, event):
+        self.focused_box = None
+        
+    def confirmer(self):
+        saisieNomClasse = self.entryNomClasse.get()
+        saisieProprietaire = self.entryProprietaire.get()
+        
+        #mettre en jaune les infos manquantes
+        if saisieNomClasse == "":
+            self.entryNomClasse.configure({"background": "Yellow"})
+        else:
+            self.entryNomClasse.configure({"background": "White"})
+        if saisieProprietaire == "":
+            self.entryProprietaire.configure({"background": "Yellow"})
+        else:
+            self.entryProprietaire.configure({"background": "White"})        
+        
+        #affichage d'un message d'erreur
+        if (saisieNomClasse == "" or saisieProprietaire == ""):
+            print(saisieNomClasse)
+            print(saisieProprietaire)
+
+            messagebox.showwarning("Attention", "Saisir les informations manquantes")
+        
+        else: 
+            self.canceler() #retour à au menu de base CRC  
+            
+
 class Modele():
-    def __init__(self, parent):
+    def __init__(self, parent, serveur):
         self.parent=parent
+        self.serveur = serveur
 
     def ajoutListe(self):
         pass
@@ -215,13 +337,40 @@ class Modele():
         
     def lectureSQL(self):
         pass
+    
+    def nomsDesClasses(self):
+        champs = ["id_classes", "nom", "id_projet"]
+        selected = self.serveur.sel("CRCClasse", champs)
+        #ajouter les classes correspondant au id projet à une liste
+        classes = []
+        for element in select:
+            if element[2] == self.parent.idProjet:
+                classes.append(element)    
+        return classes    
 
 class Controleur():
     def __init__(self):
-        self.modele=Modele(self)
-        #self.serveur = self.connectionServeur()
+        #informations du système quand le programme est lancé
+        #self.idClient = 999;
+        
+        self.ip = 999;
+        self.idProjet = 999;
+          
+        #connexion au proxy
+        ad="http://"+str(self.ip)+":9999"
+        self.serveur = ServerProxy(ad)
+        
+        #MVC
+        self.modele=Modele(self, self.serveur)
         self.vue=Vue(self)
+        
+
+        
+        #self.serveur = self.connectionServeur()
+        
+        
         self.vue.root.mainloop()
+      
     
     def connectionServeur(self):
         ad="http://"+pUsagerIP+":9998"
