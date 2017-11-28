@@ -18,14 +18,14 @@ class Controleur():
     def __init__(self):
         for x in sys.argv:
             print (x)
-        
+        """
         self.saasIP=sys.argv[1]
         self.utilisateur=sys.argv[2]
         self.organisation=sys.argv[3]
         self.idProjet=sys.argv[4]
         self.clientIP=sys.argv[5]
         self.adresseServeur="http://"+self.saasIP+":9998"
-
+"""
         self.modele=Modele(self)
         #self.serveur = self.connectionServeur()
         self.vue=Vue(self)
