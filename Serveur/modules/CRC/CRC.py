@@ -53,6 +53,10 @@ class Vue():
         for classes in self.classes:
             self.listeResponsabilites.insert(END,classes[2])
             self.listeCollaboration.insert(END,classes[1])
+            
+        #informations sur le propriétaire
+        self.lblNomClasse.config(text = self.classes[index][2])
+        self.lblProprietaire.config(text  = self.classes[index][3])
        
         
     def creerMenuGauche(self):
@@ -111,11 +115,11 @@ class Vue():
         frame2 = Frame(self.menuDroite)
         frame2.pack(fill=X)
         
-        lblNomClasse = Label(frame2, text = "nom de la classe")
-        lblNomClasse.pack()
+        self.lblNomClasse = Label(frame2, text = "nom de la classe")
+        self.lblNomClasse.pack()
         
-        lblProprietaire = Label(frame2, text = "propriétaire de la classe")
-        lblProprietaire.pack()
+        self.lblProprietaire = Label(frame2, text = "propriétaire de la classe")
+        self.lblProprietaire.pack()
         
         lblResponsabilites = Label(frame2, text = "Responsabilités")
         lblResponsabilites.pack()
